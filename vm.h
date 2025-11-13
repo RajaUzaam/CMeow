@@ -9,6 +9,23 @@
 #define OPERAND_SIZE 2//bytes
 #define OPCODE_SIZE 1//byte
 
+typedef enum ValueType {
+    INT,
+    REAL,
+    BOOL,
+    CHAR
+} ValueType;
+
+typedef struct PointValue {
+    ValueType type;
+    union {
+        int16_t* int_val;
+        float* fl_val;
+        char* char_val;
+        bool* bool_val;
+    } value;
+} PointValue;
+
 //This struct will be returned by "Fetch" and loaded by the "Decode"
 typedef struct Instruction {
     uint8_t opcode;
@@ -59,7 +76,7 @@ bool decode_execute(Instruction Instruction);
 int16_t search_const(int32_t val);
 
 //Code Funcs
-int8_t oper_size(Opcodes opcode);
+//int8_t oper_size(Opcodes opcode);
 
 // Instructions
 bool stop();

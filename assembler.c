@@ -9,14 +9,14 @@ int32_t refrences_size = 0;
 Reference *unresolved_refrences = NULL;
 int32_t unresolved_refrences_size = 0;
 
-uint8_t *_code = NULL;
-int32_t _code_size = 0;
+uint8_t *_code = NULL; //
+int32_t _code_size = 0; //
 int32_t _curr_addr = 0;
 
-int32_t *_co_consts = NULL;
-int32_t _co_consts_size = 0;
+int32_t *_co_consts = NULL; //
+int32_t _co_consts_size = 0; //
 
-int32_t _entry_point = 0;
+int32_t _entry_point = 0; //
 
 void ExecuteAssembler(FILE* bc_file) {
     char *instr;

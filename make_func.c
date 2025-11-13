@@ -78,7 +78,7 @@ void resolve_func_set(bool entry) {
             case JMP: {
                 add_op_code(JMP);
                 create_unresolved_ref(func_instr_set[++i], _curr_addr+1, JMP_REF);
-                add_oper_code(-1);
+                add_oper_code(0);
                 _curr_addr += 3;
                 break;
             }

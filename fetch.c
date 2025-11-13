@@ -6,10 +6,10 @@ Instruction fetch_instruction() {
     uint8_t opcode = code[ip++];
     int16_t operand = 0;
 
-    uint8_t operand_size = oper_size(opcode);
-    if (operand_size > 0) {
-        memcpy(&operand, &code[ip], operand_size);
-        ip += operand_size;
+    bool operand_size = HasOperand(opcode);
+    if (operand_size) {
+        memcpy(&operand, &code[ip], OPERAND_SIZE);
+        ip += OPERAND_SIZE;
     }
 
     new_instruction.opcode = opcode;

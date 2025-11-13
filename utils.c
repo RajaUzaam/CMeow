@@ -34,35 +34,3 @@ void add_to_table(char*** table, int32_t *table_size, char* str) {
     }
     strcpy((*table)[(*table_size) - 1], str);
 }
-
-LoaderOpcodes get_op(char* op) {
-    if (!(strcmp(op, "CONST"))) {return CONST;} 
-    else if (!(strcmp(op, "GLOBAL"))) {return GLOBAL;}
-    else if (!(strcmp(op, "LOCAL"))) {return LOCAL;}
-    else if (!(strcmp(op, "NAME"))) {return NAME;}
-    else if (!(strcmp(op, "START"))) {return START;} 
-    else if (!(strcmp(op, "END"))) {return END;}
-    else if (!(strcmp(op, "ARG"))) {return ARG;}
-    else {return -1;}
-}
-
-Opcodes get_code_op(char* op) {
-    if (!(strcmp(op, "STOP"))) {return STOP;}
-    else if (!(strcmp(op, "PUSHI"))) {return PUSHI;}
-    else if (!(strcmp(op, "LOADG"))) {return LOADG;}
-    else if (!(strcmp(op, "STOREG"))) {return STOREG;}
-    else if (!(strcmp(op, "JMP"))) {return JMP;}
-    else if (!(strcmp(op, "ADDI"))) {return ADDI;}
-    else if (!(strcmp(op, "SUBI"))) {return SUBI;}
-    else if (!(strcmp(op, "MULI"))) {return MULI;}
-    else if (!(strcmp(op, "DIVI"))) {return DIVI;}
-    else if (!(strcmp(op, "STOP"))) {return STOP;}
-    else if (!(strcmp(op, "RET"))) {return RET;}
-    else if (!(strcmp(op, "CALL"))) {return CALL;}
-    else if (!(strcmp(op, "ENTER"))) {return ENTER;}
-    else if (!(strcmp(op, "LOADA"))) {return LOADA;}
-    else if (!(strcmp(op, "LOADL"))) {return LOADL;}
-    else if (!(strcmp(op, "STOREL"))) {return STOREL;}
-    else if (!(strcmp(op, "OUT"))) {return OUT;} 
-    else {return -1;}
-}
