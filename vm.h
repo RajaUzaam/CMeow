@@ -5,57 +5,73 @@
 #include "header.h"
 #include "instruction_set.h"
 #include "utils.h"
+#include "infer_type.h"
 
-#define OPERAND_SIZE 2//bytes
-#define OPCODE_SIZE 1//byte
+//Enum for Handling Diff DataTypes
 
-typedef enum ValueType {
-    INT,
-    REAL,
-    BOOL,
-    CHAR
-} ValueType;
+#define PRIMITIVES CHAR+1
+#define IsPrimitive(val) (bool)((val >= 0 && val < PRIMITIVES) ? true : false)
 
-typedef struct PointValue {
+//Basic unit of Primitives for our VM
+typedef struct Value {
     ValueType type;
     union {
-        int16_t* int_val;
-        float* fl_val;
-        char* char_val;
-        bool* bool_val;
+        int32_t int_val;
+        float   fl_val;
+        char    chr_val;
+        bool    bl_val;
     } value;
-} PointValue;
+} Value;
 
-//This struct will be returned by "Fetch" and loaded by the "Decode"
+typedef struct Function {
+    int32_t idx;
+    int32_t arg_num;
+    int32_t local_num;
+    ValueType *args;
+    ValueType *locals;
+    int32_t code_size;
+    uint8_t *code;
+} Function;
+
+typedef struct Frame {
+    Function *func_ptr;
+    int32_t ip;
+    int32_t ret_addr;
+} Frame;
+
+typedef struct VM {
+    Value *stack;
+    int32_t sp;
+    int32_t bp;
+
+    Frame *call_stack;
+    int32_t fp;
+
+    Function *functions;
+    int32_t func_count;
+} VM;
+
 typedef struct Instruction {
     uint8_t opcode;
     int16_t operand;
 } Instruction;
 
-//Stack and related registers
-extern int32_t *stack;
-extern int32_t stack_size;
-extern int32_t sp;
-extern int32_t fp;
+extern VM vm;
 
 //Storage of Global Variables
-extern int32_t *globals;
+extern Value *globals;
 extern int32_t globals_size;
 
 //Code Array that stores the binary instructions
-extern uint8_t *code;
-extern int32_t code_size;
-extern int32_t ip;
+extern uint8_t code[];
 
 //Const table used to refer to constants
-extern int32_t *co_consts;
+extern Value *co_consts;
 extern int32_t co_consts_size;
 
-typedef struct VMInstance {
-    int name;
-} VMInstance;
-
 #endif
+
+void ConstructBin();
 
 //Virual Machine
 int ExecuteVM();
@@ -75,19 +91,16 @@ bool decode_execute(Instruction Instruction);
 //Const Table Funcs
 int16_t search_const(int32_t val);
 
-//Code Funcs
-//int8_t oper_size(Opcodes opcode);
-
 // Instructions
 bool stop();
-bool push_i(int16_t val);
+bool push(int16_t val);
 bool out();
-bool store_i(int16_t addr);
-bool load_i(int16_t addr);
-bool add_i();
-bool sub_i();
-bool mul_i();
-bool div_i();
+bool store(int16_t addr);
+bool load(int16_t addr);
+bool add();
+bool sub();
+bool mul();
+bool div_(); //div() is a c lib ig
 bool jmp(int16_t addr);
 bool call(int16_t addr);
 bool ret();

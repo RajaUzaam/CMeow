@@ -63,7 +63,7 @@ void resolve_func_set(bool entry) {
             }
         }
         switch (get_code_op(func_instr_set[i])) {
-            case PUSHI: case ENTER: {
+            case PUSH: case ENTER: {
                 add_op_code(get_code_op(func_instr_set[i]));
                 add_oper_code(search_const_table(atoi(func_instr_set[++i])));
                 _curr_addr += 3;

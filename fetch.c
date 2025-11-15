@@ -3,13 +3,21 @@
 Instruction fetch_instruction() {
     Instruction new_instruction;
 
-    uint8_t opcode = code[ip++];
+    Frame *frame = &vm.call_stack[vm.fp];
+    Function *fn = frame->func_ptr;
+
+    uint8_t opcode = fn->code[frame->ip++];
+    vm.call_stack[vm.fp].ip++;
     int16_t operand = 0;
 
-    bool operand_size = HasOperand(opcode);
-    if (operand_size) {
-        memcpy(&operand, &code[ip], OPERAND_SIZE);
-        ip += OPERAND_SIZE;
+    if (HasOperand(opcode)) {
+        if (frame->ip + OPERAND_SIZE > fn->code_size) {
+            printf("Error: Truncated bytecode operand.\n");
+            exit(1);
+        }
+
+        memcpy(&operand, &(vm.call_stack[vm.fp].func_ptr->code[vm.call_stack[vm.fp].ip]), OPERAND_SIZE);
+        vm.call_stack[vm.fp].ip += OPERAND_SIZE;
     }
 
     new_instruction.opcode = opcode;

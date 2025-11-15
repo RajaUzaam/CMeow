@@ -2,7 +2,7 @@
 
 const char op_str[OPCODES_NUM][STD_OPCODE_LEN] = {
     //Has Operands
-    "PUSHI",
+    "PUSH",
     "STOREG",
     "LOADG",
     "STOP",
@@ -15,10 +15,10 @@ const char op_str[OPCODES_NUM][STD_OPCODE_LEN] = {
 
     //Doesn't have Operands
     "OUT",
-    "ADDI",
-    "SUBI",
-    "MULI",
-    "DIVI",
+    "ADD",
+    "SUB",
+    "MUL",
+    "DIV",
     "RET"
 };
 

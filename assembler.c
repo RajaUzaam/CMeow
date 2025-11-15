@@ -13,6 +13,8 @@ uint8_t *_code = NULL; //
 int32_t _code_size = 0; //
 int32_t _curr_addr = 0;
 
+uint8_t *bytecode = NULL;
+
 int32_t *_co_consts = NULL; //
 int32_t _co_consts_size = 0; //
 

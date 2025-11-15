@@ -2,8 +2,8 @@
 
 bool stop() {return true;}
 
-bool push_i(int16_t addr) {
-    push_int(co_consts[addr]);
+bool push(int16_t addr) {
+    push_int(co_consts[addr].value.int_val);
     return false;
 }
 
@@ -16,19 +16,19 @@ bool out() {
     return false;
 }
 
-bool store_i(int16_t addr) {
+bool store(int16_t addr) {
     int32_t store_val = pop_int();
     store_globals(addr, store_val);
     return false;
 }
 
-bool load_i(int16_t addr) {
+bool load(int16_t addr) {
     int32_t global = get_globals(addr);
     push_int(global);
     return false;
 }
 
-bool add_i() {
+bool add() {
     int32_t rhs = pop_int();
     int32_t lhs = pop_int();
     int32_t total = lhs + rhs;
@@ -36,7 +36,7 @@ bool add_i() {
     return false;
 }
 
-bool sub_i() {
+bool sub() {
     int32_t rhs = pop_int();
     int32_t lhs = pop_int();
     int32_t total = lhs - rhs;
@@ -44,7 +44,7 @@ bool sub_i() {
     return false;
 }
 
-bool mul_i() {
+bool mul() {
     int32_t rhs = pop_int();
     int32_t lhs = pop_int();
     int32_t total = lhs * rhs;
@@ -52,7 +52,7 @@ bool mul_i() {
     return false;
 }
 
-bool div_i() {
+bool div_() {
     int32_t rhs = pop_int();
     if (rhs == 0) {
         printf("Division by Zero Error!");

@@ -4,6 +4,7 @@
 #include "header.h"
 #include "instruction_set.h"
 #include "utils.h"
+#include "infer_type.h"
 
 //2 Types of Jump and Function Reference
 typedef enum RefType {
@@ -34,6 +35,9 @@ extern int32_t symbol_table_size;
 extern uint8_t *_code;
 extern int32_t _code_size;
 extern int32_t _curr_addr;
+
+//Final ByteCode
+extern uint8_t *bytecode;
 
 //Constants Table
 extern int32_t *_co_consts;

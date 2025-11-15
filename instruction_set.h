@@ -7,6 +7,8 @@
 #define LOADER_OPCODES_NUM 7
 #define TAKES_OPERAND_NUM 9
 #define STD_OPCODE_LEN 8
+#define OPERAND_SIZE 2
+#define OPCODE_SIZE 1
 
 #define IsOpcode(val) (bool)(( val >= 0 && val < OPCODES_NUM ) ?  true : false)
 #define ISLoaderOp(val) (bool)(( val >= 0  && val < LOADER_OPCODES_NUM ) ? true : false)
@@ -14,7 +16,7 @@
 
 typedef enum Opcodes {
     //Has Operands
-    PUSHI,
+    PUSH,
     STOREG,
     LOADG,
     STOP,
@@ -27,13 +29,42 @@ typedef enum Opcodes {
 
     //Doesnt have Operands
     OUT,
-    ADDI,
-    SUBI,
-    MULI,
-    DIVI,
+    ADD,
+    SUB,
+    MUL,
+    DIV,
     RET
 
 } Opcodes;
+
+typedef enum BinDumpOpcodes {
+    HEADER_TABLE = OPCODES_NUM,
+    CONSTANTS_TABLE,
+    GLOBALS_TABLE,
+    FUNCTIONS_TABLE,
+    BYTECODE,
+    FUNC,
+    FUNC_END,
+    ARGS,
+    LOCALS,
+    CODE_OFFSET,
+    CODE_SIZE,
+    INDEX
+} BinDumpOpcodes;
+
+typedef enum ValueType {
+    DYNAMIC,
+    INT32,
+    INT64,
+    REAL,
+    BOOL,
+    CHAR,
+    FUNC_TYPE,
+    ARR,
+    STR,
+    OBJ,
+    NONE
+ } ValueType;
 
 typedef enum LoaderOpcodes {
     CONST,
