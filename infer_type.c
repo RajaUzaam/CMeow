@@ -1,4 +1,5 @@
 #include "infer_type.h"
+#include "instruction_set.h"
 
 bool is_int(char* literal, int32_t str_len) {
     for (int32_t i = 0; i < str_len; i++) {

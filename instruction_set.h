@@ -5,7 +5,7 @@
 
 #define OPCODES_NUM 16
 #define LOADER_OPCODES_NUM 7
-#define TAKES_OPERAND_NUM 9
+#define TAKES_OPERAND_NUM 8
 #define STD_OPCODE_LEN 8
 #define OPERAND_SIZE 2
 #define OPCODE_SIZE 1
@@ -19,7 +19,6 @@ typedef enum Opcodes {
     PUSH,
     STOREG,
     LOADG,
-    STOP,
     JMP,
     CALL,
     ENTER,
@@ -28,6 +27,7 @@ typedef enum Opcodes {
     STOREL,
 
     //Doesnt have Operands
+    STOP,
     OUT,
     ADD,
     SUB,

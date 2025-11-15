@@ -2,9 +2,6 @@
 
 #include "vm.h"
 
-//int32_t *stack = NULL;
-//int32_t stack_size = 0;
-//int32_t sp = -1;
 VM vm;
 
 Value *globals = NULL;
@@ -59,8 +56,8 @@ uint8_t code[] = {
     // ------- Function 0 -------
     FUNC,
     INDEX, 0x00,0x00,0x00,0x00,
-    CODE_OFFSET, 0x73,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  // func0 code offset = 115
-    CODE_SIZE,   0x0B,0x00,0x00,0x00,                        // code size = 11 bytes
+    CODE_OFFSET, 0x74,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  // func0 code offset = 115
+    CODE_SIZE,   0x15,0x00,0x00,0x00,                        // code size = 11 bytes
     ARGS,
     0x01,0x00,0x00,0x00,                                     // arg count
     INT32,
@@ -72,15 +69,15 @@ uint8_t code[] = {
     FUNC,
     0xFF,                                                     // entry point marker
     INDEX, 0x01,0x00,0x00,0x00,
-    CODE_OFFSET, 0x7E,0x00,0x00,0x00,0x00,0x00,0x00,0x00,    // func1 code offset = 126
-    CODE_SIZE,   0x07,0x00,0x00,0x00,                        // code size = 7 bytes
+    CODE_OFFSET, 0x8A,0x00,0x00,0x00,0x00,0x00,0x00,0x00,    // func1 code offset = 126
+    CODE_SIZE,   0x08,0x00,0x00,0x00,                        // code size = 7 bytes
 
     // ===============================
     //          BYTECODE
     // ===============================
     // ---- Function 0 bytecode (11 bytes) ----
     START,
-    ENTER, 0x01, 0x01,
+    ENTER, 0x01, 0x00,
     LOADA, 0x00, 0x00,
     STOREL, 0x00, 0x00,
     LOADL, 0x00, 0x00,
@@ -98,11 +95,6 @@ uint8_t code[] = {
     STOP
 };
 
-
-
-//int32_t code_size = 0; //
-//int32_t ip = 0; //
-
 void InitializeVM() {
     vm.stack = NULL;
     vm.fp = 0;
@@ -112,11 +104,38 @@ void InitializeVM() {
 int ExecuteVM() {
     ConstructBin();
     InitializeVM();
+    printf("CONSTRUCTED AND INITIALIZED!\n");
+    for (int32_t i = 0; i < co_consts_size; i++) {
+        printf("-> %d | %d\n", co_consts[i].type, co_consts[i].value.int_val);
+    }
+    for (int32_t i = 0; i < globals_size; i++) {
+        printf("--> %d\n", globals[i].type);
+    }
+    printf("Func cout; %d | Idx: %d\n", vm.func_count, vm.functions[0].idx);
+    for (int32_t i = 0; i < vm.functions[0].code_size; i++) {
+        printf("Code: %d\n", vm.functions[0].code[i]);
+    }
+
+    printf("======\n=======\n");
+    printf("Idx: %d\n",  vm.functions[0].idx);
+    for (int32_t i = 0; i < vm.functions[1].code_size; i++) {
+        printf("Code: %d\n", vm.functions[1].code[i]);
+    }
+    printf("\nEntry Point: %d\n", vm.call_stack[0].func_ptr->idx);
+    // int32_t j = 0;
+    // while (code[j] != STOP) {
+    //     print_binary(code[j]);
+    // }
+    int32_t i = 0;
     Instruction instruction = fetch_instruction();
+    printf("Instruction: %d | %d\n", instruction.opcode, instruction.operand);
     bool exit = decode_execute(instruction);
+    printf("[%d]\n", ++i);
     while (!exit) {
         instruction = fetch_instruction();
+        printf("Instruction: %d | %d\n", instruction.opcode, instruction.operand);
         exit = decode_execute(instruction);
+        printf("[%d]\n", ++i);
     }
     return 0;
 }

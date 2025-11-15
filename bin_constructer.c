@@ -61,6 +61,7 @@ void load_func_bytecode(int32_t idx, int64_t addr, uint8_t **bc_code, int32_t si
 // Construct functions table
 void construct_func_table(int64_t addr) {
     int64_t ip = addr;
+    int32_t curr_func = -1;
     bool entry = false;
 
     while (code[ip] != START) {
@@ -76,17 +77,21 @@ void construct_func_table(int64_t addr) {
         int32_t idx = -1;
         int64_t offset = 0;
         int32_t code_size = 0;
+        curr_func++;
 
-        while (ip < 146) {
+        while (ip < 144) {
             uint8_t tag = code[ip++];
-            printf("Tag: %d\n", tag);
 
             switch (tag) {
                 case INDEX:
                     idx = read_int32(code, ip);
                     ip += 4;
+                    //vm.functions[curr_func].idx = idx;
                     if (entry) {
-                        vm.call_stack[0].func_ptr = &vm.functions[idx];
+                        //printf("IDX ENTRY: %d\n", idx);
+                        vm.call_stack = malloc(sizeof(Frame));
+                        //printf("-> Func Idx: %d\n", vm.functions[idx].idx);
+                        vm.call_stack[0].func_ptr = &vm.functions[1];
                         vm.call_stack[0].ip = 0;
                         vm.call_stack[0].ret_addr = -1;
                     }
@@ -132,7 +137,7 @@ void construct_func_table(int64_t addr) {
                     ip--; goto next_func; break;
 
                 default:
-                printf("{%d}", tag);
+                    printf("{%d}", tag);
                     perror("Unknown function tag!");
                     exit(1);
             }

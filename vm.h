@@ -77,12 +77,12 @@ void ConstructBin();
 int ExecuteVM();
 
 //Stack Funcs
-void push_int(int32_t val);
-int32_t pop_int();
+void push_int(Value val);
+Value pop_int();
 
 //Global Vars Funcs
-void store_globals(int16_t addr, int32_t val);
-int32_t get_globals(int16_t addr);
+void store_globals(int16_t addr, Value val);
+Value get_globals(int16_t addr);
 
 //F-E Cycle Funcs
 Instruction fetch_instruction();
