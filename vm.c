@@ -54,9 +54,9 @@ uint8_t code[] = {
     0x02, 0x00, 0x00, 0x00,      // number of functions = 2
 
     // ------- Function 0 -------
-    FUNC,
+    //FUNC,
     INDEX, 0x00,0x00,0x00,0x00,
-    CODE_OFFSET, 0x74,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  // func0 code offset = 115
+    CODE_OFFSET, 0x71,0x00,0x00,0x00,0x00,0x00,0x00,0x00,  // func0 code offset = 115
     CODE_SIZE,   0x15,0x00,0x00,0x00,                        // code size = 11 bytes
     ARGS,
     0x01,0x00,0x00,0x00,                                     // arg count
@@ -66,17 +66,19 @@ uint8_t code[] = {
     INT32,
 
     // ------- Function 1 (Entry) -------
-    FUNC,
+    //FUNC,
     0xFF,                                                     // entry point marker
     INDEX, 0x01,0x00,0x00,0x00,
-    CODE_OFFSET, 0x8A,0x00,0x00,0x00,0x00,0x00,0x00,0x00,    // func1 code offset = 126
-    CODE_SIZE,   0x08,0x00,0x00,0x00,                        // code size = 7 bytes
+    CODE_OFFSET, 0x86,0x00,0x00,0x00,0x00,0x00,0x00,0x00,    // func1 code offset = 126
+    CODE_SIZE,   0x08,0x00,0x00,0x00, 
+    //ARGS, 0x00, 0x00, 0x00, 0x00,
+    //LOCALS, 0x00, 0x00, 0x00, 0x00,                       // code size = 7 bytes
 
     // ===============================
     //          BYTECODE
     // ===============================
     // ---- Function 0 bytecode (11 bytes) ----
-    START,
+    //START,
     ENTER, 0x01, 0x00,
     LOADA, 0x00, 0x00,
     STOREL, 0x00, 0x00,
@@ -88,7 +90,7 @@ uint8_t code[] = {
     RET,
 
     // ---- Function 1 bytecode (7 bytes) ----
-    START,
+    //START,
     PUSH, 0x00, 0x00,
     CALL, 0x00, 0x00,
     OUT,
@@ -117,7 +119,7 @@ int ExecuteVM() {
     }
 
     printf("======\n=======\n");
-    printf("Idx: %d\n",  vm.functions[0].idx);
+    printf("Idx: %d\n",  vm.functions[1].idx);
     for (int32_t i = 0; i < vm.functions[1].code_size; i++) {
         printf("Code: %d\n", vm.functions[1].code[i]);
     }

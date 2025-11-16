@@ -59,58 +59,46 @@ void load_func_bytecode(int32_t idx, int64_t addr, uint8_t **bc_code, int32_t si
 }
 
 // Construct functions table
-void construct_func_table(int64_t addr) {
+void construct_func_table(int64_t addr, int32_t func_count) {
     int64_t ip = addr;
-    int32_t curr_func = -1;
-    bool entry = false;
 
-    while (code[ip] != START) {
-        if (code[ip++] != FUNC) {
-            perror("Expected FUNC marker!");
-            exit(1);
-        }
+    for (int32_t j = 0; j < func_count; j++) {
+        int32_t read_opcodes = 0;
+        bool entry = false;
         if (code[ip] == 0xFF) {
+            ip++;
             entry = true;
-            ip++; 
         }
-
         int32_t idx = -1;
         int64_t offset = 0;
         int32_t code_size = 0;
-        curr_func++;
-
-        while (ip < 144) {
+        int32_t opcode_num = (entry) ? (3) : (5);
+        while (read_opcodes < opcode_num) {
             uint8_t tag = code[ip++];
-
-            switch (tag) {
+            switch(tag) {
                 case INDEX:
                     idx = read_int32(code, ip);
-                    ip += 4;
-                    //vm.functions[curr_func].idx = idx;
+                    read_opcodes++; ip += 4;
+                    vm.functions[j].idx = idx;
                     if (entry) {
-                        //printf("IDX ENTRY: %d\n", idx);
                         vm.call_stack = malloc(sizeof(Frame));
-                        //printf("-> Func Idx: %d\n", vm.functions[idx].idx);
                         vm.call_stack[0].func_ptr = &vm.functions[1];
                         vm.call_stack[0].ip = 0;
                         vm.call_stack[0].ret_addr = -1;
                     }
                     break;
-
                 case CODE_OFFSET:
                     offset = read_int64(code, ip);
-                    ip += 8;
+                    ip += 8; read_opcodes++;
                     break;
-
                 case CODE_SIZE:
                     code_size = read_int32(code, ip);
-                    ip += 4;
+                    ip += 4; read_opcodes++;
                     load_func_bytecode(idx, offset, &vm.functions[idx].code, code_size);
                     break;
-
                 case ARGS: {
                     int32_t arg_num = read_int32(code, ip);
-                    ip += 4;
+                    ip += 4; read_opcodes++;
                     vm.functions[idx].arg_num = arg_num;
                     vm.functions[idx].args = malloc(sizeof(ValueType) * arg_num);
                     for (int32_t j = 0; j < arg_num; j++) {
@@ -118,10 +106,9 @@ void construct_func_table(int64_t addr) {
                     }
                     break;
                 }
-
                 case LOCALS: {
                     int32_t local_num = read_int32(code, ip);
-                    ip += 4;
+                    ip += 4; read_opcodes++;
                     vm.functions[idx].local_num = local_num;
                     vm.functions[idx].locals = malloc(sizeof(ValueType) * local_num);
                     for (int32_t j = 0; j < local_num; j++) {
@@ -130,19 +117,13 @@ void construct_func_table(int64_t addr) {
                     break;
                 }
 
-                case FUNC:  // next function
-                    ip--; goto next_func; break;
-                case START:
-                    // rewind to allow outer loop to handle
-                    ip--; goto next_func; break;
-
                 default:
                     printf("{%d}", tag);
                     perror("Unknown function tag!");
                     exit(1);
+
             }
         }
-    next_func:;
     }
 }
 
@@ -158,7 +139,7 @@ void construct_frame_table(int64_t addr) {
         vm.functions[i].locals = NULL;
     }
 
-    construct_func_table(addr + 4);
+    construct_func_table(addr + 4, func_count);
 }
 
 // Construct full binary
