@@ -23,7 +23,7 @@ bool is_real(char* literal, int32_t str_len) {
 }
 
 bool is_chr(char* literal, int32_t str_len) {
-    if (strlen == 3 && isascii(literal[1]) && literal[0] == '\'' && literal[2] == '\'') 
+    if (strlen(literal) == 3 && isascii(literal[1]) && literal[0] == '\'' && literal[2] == '\'') 
         {return true;}
     return false;
 }
@@ -47,9 +47,25 @@ bool is_str(char* literal, int32_t str_len) {
 int8_t check_type(char* literal) {
     int32_t str_len = strlen(literal);
     if      (is_int(literal, str_len))  {return INT32;}
-    else if (is_real(literal, str_len)) {return REAL;}
+    else if (is_real(literal, str_len)) {return REAL32;}
     else if (is_bl(literal, str_len))   {return BOOL;}
     else if (is_chr(literal, str_len))  {return CHAR;}
     else if (is_str(literal, str_len))  {return STR;}
     else {return -1;}
+}
+
+void fill_value(char* literal, Value* val, bool dynamic) {
+    switch (check_type(literal)) {
+        case INT32: {
+            (*val).type = INT32;
+            (*val).dynamic = dynamic;
+            (*val).value.int_val = atoi(literal);
+            break;
+        }
+        default: {
+            perror("BREAK!");
+            exit(1);
+        }
+    }
+    return;
 }

@@ -15,9 +15,13 @@ typedef enum RefType {
 //Struct for handling a single refrence
 typedef struct Reference {
     char* name;
+    int32_t func_idx;
     int32_t addr;
     RefType type;
 } Reference;
+
+extern uint8_t *bin_code;
+extern int64_t bin_code_size;
 
 //Array of actual refrence locations
 extern Reference *refrences;
@@ -31,16 +35,17 @@ extern int32_t unresolved_refrences_size;
 extern char **symbol_table;
 extern int32_t symbol_table_size;
 
-//Code Table
-extern uint8_t *_code;
-extern int32_t _code_size;
-extern int32_t _curr_addr;
+extern ValueType *_globals;
+extern int32_t _globals_size;
+
+extern Function *_functions;
+extern int32_t _func_size;
 
 //Final ByteCode
 extern uint8_t *bytecode;
 
 //Constants Table
-extern int32_t *_co_consts;
+extern Value *_co_consts;
 extern int32_t _co_consts_size;
 
 //Entry point variable
@@ -52,6 +57,8 @@ extern int32_t _entry_point;
 //Assembler Executioner
 void ExecuteAssembler(FILE* bc_file);
 
+void dump_bin();
+
 //Sections
 void make_consts(FILE* bc_file);
 void make_globals(FILE* bc_file);
@@ -61,14 +68,14 @@ void make_func(FILE* bc_file, bool entry_point);
 int16_t search_symbol(char* symbol);
 
 //Code Table
-void add_op_code(Opcodes val);
-void add_oper_code(int16_t val);
+void add_op_code(Function* func, Opcodes val);
+void add_oper_code(Function* func, int16_t val);
 
 //Const Table
-int16_t search_const_table(int32_t val);
-void add_const(int32_t val);
+int16_t search_const_table(Value val);
+void add_const(Value val);
 
 //Reference Control
-void create_unresolved_ref(char *name, int32_t addr, RefType type);
-void create_ref(char *name, int32_t addr, RefType type);
+void create_unresolved_ref(char *name, int32_t func_addr, int32_t addr, RefType type);
+void create_ref(char *name, int32_t func_addr, int32_t addr, RefType type);
 void resolve_refs();

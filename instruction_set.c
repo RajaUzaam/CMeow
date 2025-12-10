@@ -5,7 +5,6 @@ const char op_str[OPCODES_NUM][STD_OPCODE_LEN] = {
     "PUSH",
     "STOREG",
     "LOADG",
-    "STOP",
     "JMP",
     "CALL",
     "ENTER",
@@ -14,6 +13,7 @@ const char op_str[OPCODES_NUM][STD_OPCODE_LEN] = {
     "STOREL",
 
     //Doesn't have Operands
+    "STOP",
     "OUT",
     "ADD",
     "SUB",
@@ -21,6 +21,7 @@ const char op_str[OPCODES_NUM][STD_OPCODE_LEN] = {
     "DIV",
     "RET"
 };
+
 
 const char loader_op_str[LOADER_OPCODES_NUM][STD_OPCODE_LEN] = {
     "CONST",

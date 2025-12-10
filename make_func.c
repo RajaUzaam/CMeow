@@ -18,21 +18,37 @@ int16_t search_table(char* symbol, char*** table, int32_t* table_size) {
     return -1;
 }
 
+void val_to_table(ValueType** table, int32_t *table_size, ValueType val) {
+    (*table_size)++;
+    (*table) = realloc((*table), (*table_size) * sizeof(char*));
+    if (!(*table)) {
+        perror("realloc failed");
+        exit(1);
+    }
+    (*table)[(*table_size)-1] = val;
+}
+
 void resolve_func_set(bool entry) {
     int32_t j = 0;
-    while (get_op(func_instr_set[j]) != START) {
-        if (entry) {continue;}
-        switch(get_op(func_instr_set[j])) {
+    int32_t _curr_addr = 0;
+    int32_t opc;
+
+    if (!entry) {
+    while ((opc = get_op(func_instr_set[j])) != START) {
+        if (entry) {break;}
+        switch(opc) {
             case LOCAL: {
                 add_to_table(&local_symbol_table, &local_symbol_table_size, func_instr_set[++j]);
+                val_to_table(&_functions[_func_size-1].locals, &_functions[_func_size-1].local_num, INT32);
                 break;
             }
             case NAME: {
-                create_ref(func_instr_set[++j], _curr_addr, FUNC_REF);
+                create_ref(func_instr_set[++j], _func_size-1, -1, FUNC_REF);
                 break;
             }
             case ARG: {
                 add_to_table(&arg_symbol_table, &arg_symbol_table_size, func_instr_set[++j]);
+                val_to_table(&_functions[_func_size-1].args, &_functions[_func_size-1].arg_num, INT32);
                 break;
             }
             default: {
@@ -41,20 +57,28 @@ void resolve_func_set(bool entry) {
         }
         j++;
     }
-    if (entry) {_entry_point = _curr_addr;}
+    } 
+    else {
+        _entry_point = _func_size-1;
+    }
+    
+
     for (int32_t i = (j+1); i < func_instr_set_size; i++) {
+        opc = get_code_op(func_instr_set[i]);
         if (!entry) {
-            switch (get_code_op(func_instr_set[i])) {
+            switch (opc) {
                 case LOADL: case STOREL: {
-                    add_op_code(get_code_op(func_instr_set[i]));
-                    add_oper_code(search_table(func_instr_set[++i], &local_symbol_table, &local_symbol_table_size));
+                    add_op_code(&_functions[_func_size-1], opc);
+                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &local_symbol_table, &local_symbol_table_size));
                     _curr_addr += 3;
+                    goto next;
                     break;
                 }
                 case LOADA: {
-                    add_op_code(get_code_op(func_instr_set[i]));
-                    add_oper_code(search_table(func_instr_set[++i], &arg_symbol_table, &arg_symbol_table_size));
+                    add_op_code(&_functions[_func_size-1], opc);
+                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &arg_symbol_table, &arg_symbol_table_size));
                     _curr_addr += 3;
+                    goto next;
                     break;
                 }
                 default: {
@@ -62,43 +86,44 @@ void resolve_func_set(bool entry) {
                 }
             }
         }
-        switch (get_code_op(func_instr_set[i])) {
+        switch (opc) {
             case PUSH: case ENTER: {
-                add_op_code(get_code_op(func_instr_set[i]));
-                add_oper_code(search_const_table(atoi(func_instr_set[++i])));
+                add_op_code(&_functions[_func_size-1], opc);
+                add_oper_code(&_functions[_func_size-1], search_const_table((Value) {.dynamic=false, .type=INT32, .value.int_val=atoi(func_instr_set[++i])}));
                 _curr_addr += 3;
                 break;
             }
             case STOREG: case LOADG: {
-                add_op_code(get_code_op(func_instr_set[i]));
-                add_oper_code(search_symbol(func_instr_set[++i]));
+                add_op_code(&_functions[_func_size-1], opc);
+                add_oper_code(&_functions[_func_size-1], search_symbol(func_instr_set[++i]));
                 _curr_addr += 3;
                 break;
             }
             case JMP: {
-                add_op_code(JMP);
-                create_unresolved_ref(func_instr_set[++i], _curr_addr+1, JMP_REF);
-                add_oper_code(0);
+                add_op_code(&_functions[_func_size-1], JMP);
+                create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, JMP_REF);
+                add_oper_code(&_functions[_func_size-1], -1);
                 _curr_addr += 3;
                 break;
             }
             case CALL: {
-                add_op_code(CALL);
-                create_unresolved_ref(func_instr_set[++i], _curr_addr+1, FUNC_REF);
-                add_oper_code(0);
+                add_op_code(&_functions[_func_size-1], CALL);
+                create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, FUNC_REF);
+                add_oper_code(&_functions[_func_size-1], -1);
                 _curr_addr += 3;
                 break;
             }
             case -1: {
-                create_ref(func_instr_set[i], _curr_addr, JMP_REF);
+                create_ref(func_instr_set[i], _func_size-1, _curr_addr, JMP_REF);
                 break;
             }
             default: {
-                add_op_code(get_code_op(func_instr_set[i]));
+                add_op_code(&_functions[_func_size-1], opc);
                 _curr_addr += 1;
                 break;
             }
         }
+        next:;
     }
 }
 
@@ -108,6 +133,16 @@ void make_func(FILE* bc_file, bool entry_point) {
     int32_t i = 0;
     instr = malloc(sizeof(char));
     instr[0] = '\0';
+
+    _functions = realloc(_functions, sizeof(Function) * (++_func_size));
+    _functions[_func_size - 1].arg_num = 0;
+    _functions[_func_size - 1].local_num = 0;
+    _functions[_func_size - 1].locals = NULL;
+    _functions[_func_size - 1].args = NULL;
+    _functions[_func_size - 1].code_size = 0;
+    _functions[_func_size - 1].code = NULL;
+    _functions[_func_size - 1].idx = _func_size-1;
+
 
     while ((c = fgetc(bc_file)) && c != EOF && get_op(instr) != END) {
         if ((c == ' ' || c == '\n') && instr != NULL && strcmp("\0", instr)) {
@@ -122,4 +157,24 @@ void make_func(FILE* bc_file, bool entry_point) {
     func_instr_set_size = 0;
     local_symbol_table_size = 0;
     arg_symbol_table_size = 0;
+    // printf("Making Function, success\nFinal Verdict:-\n");
+    // Function a_func = _functions[_func_size-1];
+    // printf("ArgNum: %d\n", a_func.arg_num);
+    // printf("LocalNum: %d\n", a_func.local_num);
+    // printf("CodeSize: %d\n", a_func.code_size);
+    // printf("Args:-\n");
+    // for (int32_t i = 0; i < a_func.arg_num; i++) {
+    //     printf("%d -> ", a_func.args[i]);
+    // }
+    // printf("None\n");
+    // printf("Locals:-\n");
+    // for (int32_t i = 0; i < a_func.local_num; i++) {
+    //     printf("%d -> ", a_func.locals[i]);
+    // }
+    // printf("None\n");
+    // printf("Code:-\n");
+    // for (int32_t i = 0; i < a_func.code_size; i++) {
+    //     printf("%d -> ", a_func.code[i]);
+    // }
+    // printf("None\n");
 }

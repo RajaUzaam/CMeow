@@ -2,6 +2,7 @@
 #define INF_T
 
 #include "header.h"
+#include "instruction_set.h"
 
 // enum {
 //     INT32,
@@ -19,3 +20,4 @@
 #endif
 
 int8_t check_type(char* literal);
+void fill_value(char* literal, Value* val, bool dynamic);

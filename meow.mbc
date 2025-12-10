@@ -1,31 +1,23 @@
 _consts
-CONST 10
 CONST 1
+CONST 2
+CONST 3
+CONST 10
 END
 
 _data
 END
 
-_func
-NAME cube
-LOCAL cu
-ARG c
-START
-ENTER 1
-LOADA c
-STOREL cu
-LOADL cu
-LOADL cu
-LOADL cu
-MUL
-MUL
-RET
-END
-
 _start
 START
+PUSH 1
+JMP end
+PUSH 2
+PUSH 3
+ADD
+end
 PUSH 10
-CALL cube
+ADD
 OUT
 STOP
 END

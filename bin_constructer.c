@@ -82,7 +82,7 @@ void construct_func_table(int64_t addr, int32_t func_count) {
                     vm.functions[j].idx = idx;
                     if (entry) {
                         vm.call_stack = malloc(sizeof(Frame));
-                        vm.call_stack[0].func_ptr = &vm.functions[1];
+                        vm.call_stack[0].func_ptr = &vm.functions[func_count-1];
                         vm.call_stack[0].ip = 0;
                         vm.call_stack[0].ret_addr = -1;
                     }

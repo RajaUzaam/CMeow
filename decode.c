@@ -2,7 +2,6 @@
 
 bool decode_execute(Instruction instruction) {
     switch (instruction.opcode) {
-        //case START: {return false;}
         case STOP: {return stop();}
         case PUSH: {return push(instruction.operand);}
         case OUT: {return out();}

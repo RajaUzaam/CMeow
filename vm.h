@@ -7,32 +7,6 @@
 #include "utils.h"
 #include "infer_type.h"
 
-//Enum for Handling Diff DataTypes
-
-#define PRIMITIVES CHAR+1
-#define IsPrimitive(val) (bool)((val >= 0 && val < PRIMITIVES) ? true : false)
-
-//Basic unit of Primitives for our VM
-typedef struct Value {
-    ValueType type;
-    union {
-        int32_t int_val;
-        float   fl_val;
-        char    chr_val;
-        bool    bl_val;
-    } value;
-} Value;
-
-typedef struct Function {
-    int32_t idx;
-    int32_t arg_num;
-    int32_t local_num;
-    ValueType *args;
-    ValueType *locals;
-    int32_t code_size;
-    uint8_t *code;
-} Function;
-
 typedef struct Frame {
     Function *func_ptr;
     int32_t ip;
@@ -63,7 +37,7 @@ extern Value *globals;
 extern int32_t globals_size;
 
 //Code Array that stores the binary instructions
-extern uint8_t code[];
+extern uint8_t *code;
 
 //Const table used to refer to constants
 extern Value *co_consts;

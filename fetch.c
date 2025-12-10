@@ -7,9 +7,6 @@ Instruction fetch_instruction() {
     Function *fn = frame->func_ptr;
 
     uint8_t opcode = fn->code[frame->ip++];
-    //vm.call_stack[vm.fp].ip++;
-    printf("%u\n", opcode);
-    printf("%u\n", HasOperand(opcode));
     int16_t operand = 0;
 
     if (HasOperand(opcode)) {
@@ -17,7 +14,6 @@ Instruction fetch_instruction() {
             printf("Error: Truncated bytecode operand.\n");
             exit(1);
         }
-        printf("MEMCPY!\n");
         memcpy(&operand, &(vm.call_stack[vm.fp].func_ptr->code[vm.call_stack[vm.fp].ip]), OPERAND_SIZE);
         vm.call_stack[vm.fp].ip += OPERAND_SIZE;
     }
