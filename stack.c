@@ -1,11 +1,11 @@
 #include "vm.h"
 
-void push_int(Value val) {
+void push_val(Value val) {
     vm.stack = realloc(vm.stack, (++vm.sp + 1) * sizeof(Value));
     vm.stack[vm.sp] = val;
 }
 
-Value pop_int() {
+Value pop_val() {
     if (vm.sp < 0) {
         printf("Stack underflow!\n");
         exit(1);

@@ -19,6 +19,7 @@ void add_const_set(Value const_data) {
     const_set_size++;
     const_set = realloc(const_set, const_set_size * sizeof(Value));
     const_set[const_set_size-1] = const_data;
+    //add_const(const_data);
 }
 
 void load_co_consts() {
@@ -35,21 +36,21 @@ void make_consts(FILE* bc_file) {
     instr[0] = '\0';
     int32_t instr_len;
 
-    while ((c = fgetc(bc_file)) != EOF && get_op(instr) != END) {
+    while ((c = fgetc(bc_file)) != EOF && get_opc(2, instr) != END) {
         instr_len = (int32_t) strlen(instr);
-        if ( c == ' ' || c == '\n') {
-            switch (get_op(instr)) {
-            case CONST:
-                char* consdata = NULL;
-                readWord(bc_file, &consdata);
-                Value val;
-                fill_value(consdata, &val, false);
-                add_const_set(val); break;
-            case END: default:
-                break;
+        if ( (c == ' ' || c == '\n') && (instr[0] != ' ' && instr_len > 1) ) {
+            char* consdata = NULL;
+            readWord(bc_file, &consdata);
+            Value val;
+            int32_t exp_type = get_opc(3, instr);
+            if (exp_type >= 0) {
+                if (!make_value(consdata, &val, true, (ValueType)exp_type)) {
+                    printf("Unknown DataType!\n"); exit(1);
+                }
             }
+            add_const_set(val);
         }
-        make_instr(&i, &instr, c);
+        make_instr(&instr_len, &instr, c);
     }
     load_co_consts();
     

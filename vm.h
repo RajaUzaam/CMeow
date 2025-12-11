@@ -6,6 +6,7 @@
 #include "instruction_set.h"
 #include "utils.h"
 #include "infer_type.h"
+//#include "operations.h"
 
 typedef struct Frame {
     Function *func_ptr;
@@ -51,8 +52,8 @@ void ConstructBin();
 int ExecuteVM();
 
 //Stack Funcs
-void push_int(Value val);
-Value pop_int();
+void push_val(Value val);
+Value pop_val();
 
 //Global Vars Funcs
 void store_globals(int16_t addr, Value val);
@@ -62,8 +63,8 @@ Value get_globals(int16_t addr);
 Instruction fetch_instruction();
 bool decode_execute(Instruction Instruction);
 
-//Const Table Funcs
-int16_t search_const(int32_t val);
+//Operations
+void perform_operation(Value *total, BinaryOps oper);
 
 // Instructions
 bool stop();

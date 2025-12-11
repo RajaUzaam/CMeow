@@ -57,11 +57,18 @@ void writeConsts() {
     int32_t curr_const_addr = const_table_addr+4;
     memcpy(&bin_code[const_table_addr], &_co_consts_size, sizeof(int32_t));
     for (int32_t i = 0; i < _co_consts_size; i++) {
-        if (_co_consts[i].type == INT32) {
-            bin_code[curr_const_addr++] = INT32;
-            memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.int_val, sizeof(int32_t));
-            curr_const_addr += sizeof(int32_t);
+        bin_code[curr_const_addr++] = _co_consts[i].type;
+        switch (_co_consts[i].type) {
+            case INT32: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.i32, GetBytes(_co_consts[i].type)); break;
+            case INT64: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.i64, GetBytes(_co_consts[i].type)); break;
+            case BOOL: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.bl, GetBytes(_co_consts[i].type)); break;
+            case CHAR: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.chr, GetBytes(_co_consts[i].type)); break;
+            case REAL32: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.r32, GetBytes(_co_consts[i].type)); break;
+            case REAL64: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.r64, GetBytes(_co_consts[i].type)); break;
+            default: exit(1);
         }
+        //memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.int_val, GetBytes(_co_consts[i].type));
+        curr_const_addr += GetBytes(_co_consts[i].type);
     }
 }
 

@@ -20,15 +20,26 @@ void construct_const_table(int64_t addr) {
     int64_t i = addr + 4; // skip table size
     for (int32_t idx = 0; idx < co_consts_size; idx++) {
         co_consts[idx].type = code[i++]; // type byte
+        uint64_t new_val;
+        memcpy(&new_val, &code[i], GetBytes(co_consts[idx].type));
         switch (co_consts[idx].type) {
             case INT32:
-                co_consts[idx].value.int_val = read_int32(code, i);
-                i += sizeof(int32_t);
-                break;
+                memcpy(&co_consts[idx].value.i32, &new_val, GetBytes(co_consts[idx].type)); break;
+            case INT64:
+                memcpy(&co_consts[idx].value.i64, &new_val, GetBytes(co_consts[idx].type)); break;
+            case BOOL:
+                memcpy(&co_consts[idx].value.bl, &new_val, GetBytes(co_consts[idx].type)); break;
+            case CHAR:
+                memcpy(&co_consts[idx].value.chr, &new_val, GetBytes(co_consts[idx].type)); break;
+            case REAL32:
+                memcpy(&co_consts[idx].value.r32, &new_val, GetBytes(co_consts[idx].type)); break;
+            case REAL64:
+                memcpy(&co_consts[idx].value.r64, &new_val, GetBytes(co_consts[idx].type)); break;
             default:
                 perror("Unknown Const Type!");
                 exit(1);
         }
+        i += GetBytes(co_consts[idx].type);
     }
 }
 
@@ -41,9 +52,12 @@ void construct_global_table(int64_t addr) {
     for (int32_t idx = 0; idx < globals_size; idx++) {
         globals[idx].type = code[i++];
         switch (globals[idx].type) {
-            case INT32:
-                globals[idx].value.int_val = 0; // initialize
-                break;
+            case INT32: globals[idx].value.i32 = 0; break;
+            case INT64: globals[idx].value.i64 = 0; break;
+            case BOOL: globals[idx].value.bl = 0; break;
+            case CHAR: globals[idx].value.chr = 0; break;
+            case REAL32: globals[idx].value.r32 = 0; break;
+            case REAL64: globals[idx].value.r64 = 0; break;
             default:
                 perror("Unknown Global Type!");
                 exit(1);

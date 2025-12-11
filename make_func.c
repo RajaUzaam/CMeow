@@ -34,21 +34,27 @@ void resolve_func_set(bool entry) {
     int32_t opc;
 
     if (!entry) {
-    while ((opc = get_op(func_instr_set[j])) != START) {
+    while ((opc = get_opc(2, func_instr_set[j])) != START) {
         if (entry) {break;}
         switch(opc) {
-            case LOCAL: {
-                add_to_table(&local_symbol_table, &local_symbol_table_size, func_instr_set[++j]);
-                val_to_table(&_functions[_func_size-1].locals, &_functions[_func_size-1].local_num, INT32);
+            case LOCALS: {
+                while ((opc = get_opc(2, func_instr_set[++j])) != CLOCALS) {
+                    opc = get_opc(3, func_instr_set[j]);
+                    val_to_table(&_functions[_func_size-1].locals, &_functions[_func_size-1].local_num, (ValueType)opc);
+                    add_to_table(&local_symbol_table, &local_symbol_table_size, func_instr_set[++j]);
+                }
                 break;
             }
             case NAME: {
                 create_ref(func_instr_set[++j], _func_size-1, -1, FUNC_REF);
                 break;
             }
-            case ARG: {
-                add_to_table(&arg_symbol_table, &arg_symbol_table_size, func_instr_set[++j]);
-                val_to_table(&_functions[_func_size-1].args, &_functions[_func_size-1].arg_num, INT32);
+            case ARGS: {
+                while ((opc = get_opc(2, func_instr_set[++j])) != CARGS) {
+                    opc = get_opc(3, func_instr_set[j]);
+                    val_to_table(&_functions[_func_size-1].args, &_functions[_func_size-1].arg_num, (ValueType)opc);
+                    add_to_table(&arg_symbol_table, &arg_symbol_table_size, func_instr_set[++j]);
+                }
                 break;
             }
             default: {
@@ -61,7 +67,6 @@ void resolve_func_set(bool entry) {
     else {
         _entry_point = _func_size-1;
     }
-    
 
     for (int32_t i = (j+1); i < func_instr_set_size; i++) {
         opc = get_code_op(func_instr_set[i]);
@@ -89,8 +94,12 @@ void resolve_func_set(bool entry) {
         switch (opc) {
             case PUSH: case ENTER: {
                 add_op_code(&_functions[_func_size-1], opc);
-                add_oper_code(&_functions[_func_size-1], search_const_table((Value) {.dynamic=false, .type=INT32, .value.int_val=atoi(func_instr_set[++i])}));
+                Value val;
+                bool test = make_value(func_instr_set[++i], &val, true, DYNAMIC);
+                //printf("FROM MAKE VAL: %d", test);
+                add_oper_code(&_functions[_func_size-1], search_const_table(val));
                 _curr_addr += 3;
+                //printf("PUSH A VAL\n");
                 break;
             }
             case STOREG: case LOADG: {
@@ -144,11 +153,13 @@ void make_func(FILE* bc_file, bool entry_point) {
     _functions[_func_size - 1].idx = _func_size-1;
 
 
-    while ((c = fgetc(bc_file)) && c != EOF && get_op(instr) != END) {
-        if ((c == ' ' || c == '\n') && instr != NULL && strcmp("\0", instr)) {
+    while ((c = fgetc(bc_file)) && c != EOF && (get_opc(2, instr) != END)) {
+        if ((c == ' ' || c == '\n') && instr[0] != '\0' && instr != NULL && instr[0] != ' ') {
+            //printf("ADD INSTR: %s\n", instr);
             add_to_table(&func_instr_set, &func_instr_set_size, instr);
         }
         make_instr(&i, &instr, c);
+        //printf("INSTR-> %s | %c\n", instr, c);
     }
     resolve_func_set(entry_point);
     func_instr_set = NULL;

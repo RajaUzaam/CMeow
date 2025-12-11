@@ -3,7 +3,7 @@
 bool stop() {return true;}
 
 bool push(int16_t addr) {
-    push_int(co_consts[addr]);
+    push_val(co_consts[addr]);
     return false;
 }
 
@@ -12,57 +12,56 @@ bool out() {
         printf("Nothing in Stack!");
         exit(1);
     }
-    Value ans = pop_int();
-    printf("OUTPUT: %d\n", ans.value.int_val);
-    push_int(ans);
+    Value ans = pop_val();
+    printf("OUTPUT: ");
+    if (IsInt32(ans.type)) {printf("%d", ans.value.i32);}
+    else if (IsInt64(ans.type)) {printf("%lld", ans.value.i64);}
+    else if (IsBool(ans.type)) {printf("%d", ans.value.bl);}
+    else if (IsChar(ans.type)) {printf("%d", ans.value.chr);}
+    else if (IsR32(ans.type)) {printf("%f", ans.value.r32);}
+    else if (IsR64(ans.type)) {printf("%f", ans.value.r64);}
+    putchar('\n');
+    push_val(ans);
     return false;
 }
 
 bool store(int16_t addr) {
-    Value store_val = pop_int();
+    Value store_val = pop_val();
     store_globals(addr, store_val);
     return false;
 }
 
 bool load(int16_t addr) {
     Value global = get_globals(addr);
-    push_int(global);
+    push_val(global);
     return false;
 }
 
 bool add() {
-    int32_t rhs = pop_int().value.int_val;
-    int32_t lhs = pop_int().value.int_val;
-    int32_t total = lhs + rhs;
-    push_int((Value){.type=INT32, .value.int_val=total});
+    Value total;
+    perform_operation(&total, OPADD);
+    push_val(total);
     return false;
 }
 
 bool sub() {
-    int32_t rhs = pop_int().value.int_val;
-    int32_t lhs = pop_int().value.int_val;
-    int32_t total = lhs - rhs;
-    push_int((Value){.type=INT32, .value.int_val=total});
+    Value total;
+    perform_operation(&total, OPSUB);
+    push_val(total);
     return false;
 }
 
 bool mul() {
-    int32_t rhs = pop_int().value.int_val;
-    int32_t lhs = pop_int().value.int_val;
-    int32_t total = lhs * rhs;
-    push_int((Value){.type=INT32, .value.int_val=total});
+    Value total;
+    perform_operation(&total, OPMUL);
+    push_val(total);
     return false;
 }
 
 bool div_() {
-    int32_t rhs = pop_int().value.int_val;
-    if (rhs == 0) {
-        printf("Division by Zero Error!");
-        exit(1);
-    }
-    int32_t lhs = pop_int().value.int_val;
-    int32_t total = (int32_t)(lhs / rhs);
-    push_int((Value) {.type = INT32, .value.int_val = total});
+    Value total;
+    perform_operation(&total, OPDIV);
+    push_val(total);
     return false;
 }
 
@@ -71,7 +70,7 @@ bool leave() {
 }
 
 bool call(int16_t addr) {
-    push_int((Value) {.type=INT32, .value.int_val=vm.bp});
+    push_val((Value) {.type=INT32, .value.i32=vm.bp});
     vm.bp = vm.sp;
     vm.fp++;
     vm.call_stack = realloc(vm.call_stack, sizeof(Frame)*(vm.fp+1));
@@ -82,33 +81,33 @@ bool call(int16_t addr) {
 }
 
 bool ret() {
-    Value return_val = pop_int();
+    Value return_val = pop_val();
     vm.sp = vm.bp - vm.call_stack[vm.fp].func_ptr->arg_num - 1;
-    vm.bp = vm.stack[vm.bp].value.int_val;
+    vm.bp = vm.stack[vm.bp].value.i32;
     vm.fp--;
-    push_int(return_val);
+    push_val(return_val);
     return false;
 }
 
 bool load_a(int16_t addr) {
-    push_int(vm.stack[vm.bp - 1 - addr]);//stack[fp - 2 - addr]);
+    push_val(vm.stack[vm.bp - 1 - addr]);
     return false;
 }
 bool enter(int32_t val) {
     for (int32_t i = 0; i < val; i++) {
-        push_int((Value) {.type=INT32, .value.int_val=0});
+        push_val((Value) {.type=INT32, .value.i32=-1});
     }
     return false;
 }
 
 bool load_l(int16_t addr) {
-    int32_t to_push = vm.stack[vm.bp + 1 + addr].value.int_val;
-    push_int(vm.stack[vm.bp + 1 + addr]);
+    Value to_push = vm.stack[vm.bp + 1 + addr];
+    push_val(to_push);
     return false;
 }
 
 bool store_l(int16_t addr) {
-    Value to_store = pop_int();
+    Value to_store = pop_val();
     vm.stack[vm.bp + 1 + addr] = to_store;
     return false;
 }

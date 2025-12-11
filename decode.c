@@ -14,7 +14,7 @@ bool decode_execute(Instruction instruction) {
         case JMP: {return jmp(instruction.operand);}
         case CALL: {return call(instruction.operand);}
         case RET: {return ret();}
-        case ENTER: {return enter(co_consts[instruction.operand].value.int_val);}
+        case ENTER: {return enter(co_consts[instruction.operand].value.i32);}
         case LOADA: {return load_a(instruction.operand);}
         case LOADL: {return load_l(instruction.operand);}
         case STOREL: {return store_l(instruction.operand);}

@@ -4,20 +4,11 @@
 #include "header.h"
 #include "instruction_set.h"
 
-// enum {
-//     INT32,
-//     INT64,
-//     REAL,
-//     BOOL,
-//     CHAR,
-//     FUNC,
-//     ARR,
-//     STR,
-//     OBJ,
-//     NONE
-// };
-
 #endif
 
 int8_t check_type(char* literal);
-void fill_value(char* literal, Value* val, bool dynamic);
+bool make_value(char* literal, Value* val, bool dynamic, ValueType type);
+int64_t to_int64(const Value *val);
+double to_double(const Value *val);
+void cast_type(Value *val, ValueType target);
+void promote(Value *val, ValueType *target_type);

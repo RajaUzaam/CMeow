@@ -1,28 +1,5 @@
 #include "assembler.h"
 
-// char **symbol_table = NULL;
-// int32_t symbol_table_size = 0;
-
-// Reference *refrences = NULL;
-// int32_t refrences_size = 0;
-
-// Reference *unresolved_refrences = NULL;
-// int32_t unresolved_refrences_size = 0;
-
-// uint8_t *_code = NULL; //
-// int32_t _code_size = 0; //
-// int32_t _curr_addr = 0;
-
-// uint8_t *bytecode = NULL;
-
-// Value *_co_consts = NULL; //
-// int32_t _co_consts_size = 0; //
-
-// int32_t _entry_point = 0; //
-
-// uint8_t *bin_code = NULL;
-// int32_t bin_code_size = 0;
-
 uint8_t *bin_code = NULL;
 int64_t bin_code_size = 0;
 
@@ -41,17 +18,11 @@ int32_t symbol_table_size = 0;
 ValueType *_globals = NULL;
 int32_t _globals_size = 0;
 
-//Code Table
-//uint8_t *_code;
-//int32_t _code_size;
-
 Function *_functions = NULL;
 int32_t _func_size = 0;
 
-//int32_t _curr_addr;
-
 //Final ByteCode
-uint8_t *bytecode = NULL;
+//uint8_t *bytecode = NULL;
 
 //Constants Table
 Value *_co_consts = NULL;
@@ -88,7 +59,7 @@ void ExecuteAssembler(FILE* bc_file) {
         //{Only diff is that it notes address in _entry_point and doesn't 
         //make use of function specific Instructions e.g. LOADA}
         else if (!strcmp(instr, "_start")) {
-            //printf("Loading Start\n");
+            //rintf("Loading Start\n");
             make_func(bc_file, true);
         }
 
