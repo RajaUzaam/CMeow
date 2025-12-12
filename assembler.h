@@ -69,7 +69,7 @@ int16_t search_symbol(char* symbol);
 
 //Code Table
 void add_op_code(Function* func, Opcodes val);
-void add_oper_code(Function* func, int16_t val);
+void add_oper_code(Function* func, int8_t val);
 
 //Const Table
 int16_t search_const_table(Value val);

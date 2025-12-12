@@ -47,7 +47,7 @@ const char type_op_str[1+TYPE_NUM][STD_OPCODE_LEN] = {
     "NONE",
 
     //Dynamic
-    "DYNAMIC",
+    //"DYNAMIC",
     "PTR",
     "FUNC",
     "ARR",

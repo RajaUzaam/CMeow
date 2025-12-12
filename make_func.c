@@ -95,7 +95,7 @@ void resolve_func_set(bool entry) {
             case PUSH: case ENTER: {
                 add_op_code(&_functions[_func_size-1], opc);
                 Value val;
-                make_const(func_instr_set[++i], &val);
+                make_const(func_instr_set[++i], &val, add_const);
                 add_oper_code(&_functions[_func_size-1], search_const_table(val));
                 _curr_addr += 3;
                 break;

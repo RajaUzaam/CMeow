@@ -7,7 +7,7 @@
 #define LOADER_OPCODES_NUM END-ARGS+1
 #define TAKES_OPERAND_NUM STOREL+1
 #define STD_OPCODE_LEN 12
-#define OPERAND_SIZE 2//Bytes
+#define OPERAND_SIZE 1//Bytes
 #define OPCODE_SIZE 1//Byte
 #define TYPE_NUM OBJ
 
@@ -22,6 +22,7 @@
 typedef enum Opcodes {
     //Has Operands
     PUSH,
+    //SIZE,
     STOREG,
     LOADG,
     JMP,
@@ -80,7 +81,6 @@ typedef enum ValueType {
     NONE,
 
     //Dynamic
-    DYNAMIC,
     PTR,
     FUNC,
     ARR,

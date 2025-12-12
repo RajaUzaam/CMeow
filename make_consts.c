@@ -19,7 +19,6 @@ void add_const_set(Value const_data) {
     const_set_size++;
     const_set = realloc(const_set, const_set_size * sizeof(Value));
     const_set[const_set_size-1] = const_data;
-    //add_const(const_data);
 }
 
 void load_co_consts() {
@@ -38,9 +37,13 @@ void make_consts(FILE* bc_file) {
 
     while ((c = fgetc(bc_file)) != EOF && get_opc(2, instr) != END) {
         instr_len = (int32_t) strlen(instr);
-        if ( (c == ' ' || c == '\n') && (instr[0] != ' ' && instr_len > 1) ) {
+        if ( (c == ' ' || c == '\n') && (instr[0] != ' ' && instr[0] != '\0') ) {
+            if (instr[0] == '#') {
+                printf("'#' in %s isn't allowed in the const table!\n", instr);
+                exit(1);
+            }
             Value val;
-            if (!make_const(instr, &val)) {
+            if (!make_const(instr, &val, add_const)) {
                 printf("Unknown DataType!\n"); exit(1);
             }
             add_const_set(val);

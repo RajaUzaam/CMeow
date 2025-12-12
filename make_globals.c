@@ -27,7 +27,7 @@ void make_globals(FILE* bc_file) {
 
     while ((c = getc(bc_file)) && c != EOF && get_opc(2, instr) != END) {
         instr_len = (int32_t) strlen(instr);
-        if ((c == '\n' || c == ' ') && (instr[0] != ' ' && instr_len > 1)) {
+        if ((c == '\n' || c == ' ') && (instr[0] != ' ' && instr[0] != '\0')) {
             add_to_table(&symbol_intr_set, &symbol_intr_set_size, instr);
         }
         make_instr(&i, &instr, c);

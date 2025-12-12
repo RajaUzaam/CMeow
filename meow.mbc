@@ -1,5 +1,5 @@
 _consts
-4i32
+50i64
 END
 
 _data
@@ -7,7 +7,9 @@ END
 
 _start
 START
-PUSH 4i32
+PUSH 50i
+PUSH #4i
+ADD
 OUT
 STOP
 END

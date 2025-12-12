@@ -13,7 +13,7 @@ typedef struct TypeRepresentation {
 #endif
 
 TypeRepresentation check_type(char* literal);
-bool make_const(char* literal, Value* val);
+bool make_const(char* literal, Value* val, void (*const_add)(Value));
 bool make_value(char* literal, Value* val, bool dynamic, int8_t type);
 int64_t to_int64(const Value *val);
 double to_double(const Value *val);

@@ -7,8 +7,8 @@ VM vm;
 Value *globals = NULL;
 int32_t globals_size = 0;
 
-Value *co_consts = NULL; //
-int32_t co_consts_size = 0; //
+Value *co_consts = NULL;
+int32_t co_consts_size = 0;
 uint8_t *code = NULL;
 
 void InitializeVM() {

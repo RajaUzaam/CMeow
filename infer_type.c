@@ -19,7 +19,7 @@ void analyze_literal(char* literal, char** data, char** suffix) {
     if (*data == NULL) {return;}
     *data = realloc(*data, sizeof(char)*(++data_len));
     (*data)[data_len-1] = '\0';
-    if (i+1 == str_len) {return;}
+    if (i == str_len) {return;}
     while ((c = literal[i]) && (c != '\0')) {
         *suffix = realloc(*suffix, sizeof(char)*(++suffix_len));
         (*suffix)[suffix_len-1] = c;
@@ -105,7 +105,7 @@ TypeRepresentation check_type(char* literal) {
                 if (dec) {printf("%s%s is Invalid!\n", res.data, type_suffix[INT32]); exit(1);}
                 res.type = INT32;
             }
-            else if (!strcmp(suffix, type_suffix[INT64])) {
+            else if (!strcmp(suffix, type_suffix[INT64]) || !strcmp(suffix, "i")) {
                 if (dec) {printf("%s%s is Invalid!\n", res.data, type_suffix[INT64]); exit(1);}
                 res.type = INT64;
             }
@@ -118,7 +118,7 @@ TypeRepresentation check_type(char* literal) {
                 res.type = BOOL;
             }
             else if (!strcmp(suffix, type_suffix[REAL32])) {res.type = REAL32;}
-            else if (!strcmp(suffix, type_suffix[REAL64])) {res.type = REAL64;}
+            else if (!strcmp(suffix, type_suffix[REAL64]) || !strcmp(suffix, "r")) {res.type = REAL64;}
             else {
                 printf("Unknown Suffix!\n"); exit(1);
             }
@@ -156,11 +156,12 @@ bool make_value(char* literal, Value* val, bool dynamic, int8_t type) {
     int8_t known_type = rep.type;
     (*val).dynamic = false;
     (*val).type = type;
-    if (type == DYNAMIC) {
-        (*val).dynamic = true;
-        (*val).type = known_type;
-        type = known_type;
-    } else if (type == -1) {
+    // if (type == DYNAMIC) {
+    //     (*val).dynamic = true;
+    //     (*val).type = known_type;
+    //     type = known_type;
+    // } 
+    if (type == -1) {
         type = known_type;
         (*val).type = type;
     }
@@ -197,8 +198,19 @@ bool make_value(char* literal, Value* val, bool dynamic, int8_t type) {
     return true;
 }
 
-bool make_const(char* literal, Value* val) {
-    return make_value(literal, val, false, -1);
+bool make_const(char* literal, Value* val, void (*const_add)(Value)) {
+    bool to_add = false;
+    if (literal[0] == '#') {
+        literal += 1;
+        to_add = true;
+    }
+    if (make_value(literal, val, false, -1)) {
+        if (to_add) {
+            const_add(*val);
+        }
+        return true;
+    }
+    return false;
 }
 
 // Convert any Value to int64_t (truncates floats)
