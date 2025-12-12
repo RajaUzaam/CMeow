@@ -1,31 +1,15 @@
 _consts
-CONST 10
-CONST 1
+50i64
 END
 
 _data
 END
 
-_func
-NAME cube
-LOCAL cu
-ARG c
-START
-ENTER 1
-LOADA c
-STOREL cu
-LOADL cu
-LOADL cu
-LOADL cu
-MULI
-MULI
-RET
-END
-
 _start
 START
-PUSHI 10
-CALL cube
+PUSH 50i
+PUSH #4i
+ADD
 OUT
 STOP
 END

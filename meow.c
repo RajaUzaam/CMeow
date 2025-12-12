@@ -1,5 +1,6 @@
 #include "vm.h"
 #include "assembler.h"
+#include "instruction_set.h"
 
 int main(int argc, char* argv[]) {
     
@@ -13,11 +14,7 @@ int main(int argc, char* argv[]) {
     fclose(bc_file);
 
     //Bin Loader
-    code = _code;
-    code_size = _code_size;
-    co_consts = _co_consts;
-    co_consts_size = _co_consts_size;
-    ip = _entry_point;
+    code = bin_code;
 
     //Virtual Machine
     ExecuteVM();

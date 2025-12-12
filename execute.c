@@ -2,115 +2,117 @@
 
 bool stop() {return true;}
 
-bool push_i(int16_t addr) {
-    push_int(co_consts[addr]);
+bool push(int16_t addr) {
+    push_val(co_consts[addr]);
     return false;
 }
 
 bool out() {
-    if (sp == -1) {
+    if (vm.sp == -1) {
         printf("Nothing in Stack!");
         exit(1);
     }
-    printf("%d\n", pop_int());
+    Value ans = pop_val();
+    printf("OUTPUT: ");
+    if (IsInt32(ans.type)) {printf("%d", ans.value.i32);}
+    else if (IsInt64(ans.type)) {printf("%lld", ans.value.i64);}
+    else if (IsBool(ans.type)) {printf("%d", ans.value.bl);}
+    else if (IsChar(ans.type)) {printf("%c", ans.value.chr);}
+    else if (IsR32(ans.type)) {printf("%f", ans.value.r32);}
+    else if (IsR64(ans.type)) {printf("%f", ans.value.r64);}
+    putchar('\n');
+    push_val(ans);
     return false;
 }
 
-bool store_i(int16_t addr) {
-    int32_t store_val = pop_int();
+bool store(int16_t addr) {
+    Value store_val = pop_val();
     store_globals(addr, store_val);
     return false;
 }
 
-bool load_i(int16_t addr) {
-    int32_t global = get_globals(addr);
-    push_int(global);
+bool load(int16_t addr) {
+    Value global = get_globals(addr);
+    push_val(global);
     return false;
 }
 
-bool add_i() {
-    int32_t rhs = pop_int();
-    int32_t lhs = pop_int();
-    int32_t total = lhs + rhs;
-    push_int(total);
+bool add() {
+    Value total;
+    perform_operation(&total, OPADD);
+    push_val(total);
     return false;
 }
 
-bool sub_i() {
-    int32_t rhs = pop_int();
-    int32_t lhs = pop_int();
-    int32_t total = lhs - rhs;
-    push_int(total);
+bool sub() {
+    Value total;
+    perform_operation(&total, OPSUB);
+    push_val(total);
     return false;
 }
 
-bool mul_i() {
-    int32_t rhs = pop_int();
-    int32_t lhs = pop_int();
-    int32_t total = lhs * rhs;
-    push_int(total);
+bool mul() {
+    Value total;
+    perform_operation(&total, OPMUL);
+    push_val(total);
     return false;
 }
 
-bool div_i() {
-    int32_t rhs = pop_int();
-    if (rhs == 0) {
-        printf("Division by Zero Error!");
-        exit(1);
-    }
-    int32_t lhs = pop_int();
-    int32_t total = (int32_t)(lhs / rhs);
-    push_int(total);
-    return false;
-}
-
-bool call(int16_t addr) {
-    push_int(fp);
-    push_int(ip);
-    fp = sp;
-    ip = addr;
+bool div_() {
+    Value total;
+    perform_operation(&total, OPDIV);
+    push_val(total);
     return false;
 }
 
 bool leave() {
-    ip = stack[fp];
-    fp = stack[fp - 1];
-    sp = fp;
+    return false;
+}
+
+bool call(int16_t addr) {
+    push_val((Value) {.type=INT32, .value.i32=vm.bp});
+    vm.bp = vm.sp;
+    vm.fp++;
+    vm.call_stack = realloc(vm.call_stack, sizeof(Frame)*(vm.fp+1));
+    vm.call_stack[vm.fp].func_ptr = &vm.functions[addr];
+    vm.call_stack[vm.fp].ip = 0;
+    vm.call_stack[vm.fp].ret_addr = vm.fp-1;
     return false;
 }
 
 bool ret() {
-    int32_t return_val = pop_int();
-    ip = stack[fp];
-    fp = stack[fp - 1];
-    sp = fp;
-    push_int(return_val);
+    Value return_val = pop_val();
+    vm.sp = vm.bp - vm.call_stack[vm.fp].func_ptr->arg_num - 1;
+    vm.bp = vm.stack[vm.bp].value.i32;
+    vm.fp--;
+    push_val(return_val);
     return false;
 }
 
 bool load_a(int16_t addr) {
-    push_int(stack[fp - 2 - addr]);
+    push_val(vm.stack[vm.bp - 1 - addr]);
     return false;
 }
 bool enter(int32_t val) {
     for (int32_t i = 0; i < val; i++) {
-        push_int(-1);
+        push_val((Value) {.type=INT32, .value.i32=-1});
     }
     return false;
 }
 
 bool load_l(int16_t addr) {
-    push_int(stack[fp + 1 + addr]);
+    Value to_push = vm.stack[vm.bp + 1 + addr];
+    push_val(to_push);
     return false;
 }
 
 bool store_l(int16_t addr) {
-    stack[fp + 1 + addr] = pop_int();
-    return false;
+    Value to_store = pop_val();
+    vm.stack[vm.bp + 1 + addr] = to_store;
     return false;
 }
 
 bool jmp(int16_t addr) {
-    ip = (ip - (OPCODE_SIZE + OPERAND_SIZE)) + addr;
+    vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (OPCODE_SIZE + OPERAND_SIZE)) + addr;
     return false;
 }

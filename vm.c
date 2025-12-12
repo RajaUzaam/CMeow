@@ -2,23 +2,24 @@
 
 #include "vm.h"
 
-int32_t *stack = NULL;
-int32_t stack_size = 0;
-int32_t sp = -1;
-int32_t fp = 0;
-int32_t ep = 0; //
+VM vm;
 
-int32_t *globals = NULL;
+Value *globals = NULL;
 int32_t globals_size = 0;
 
-int32_t *co_consts = NULL; //
-int32_t co_consts_size = 0; //
+Value *co_consts = NULL;
+int32_t co_consts_size = 0;
+uint8_t *code = NULL;
 
-uint8_t *code = NULL; //
-int32_t code_size = 0; //
-int32_t ip = 0; //
+void InitializeVM() {
+    vm.stack = NULL;
+    vm.fp = 0;
+    vm.sp = -1;
+}
 
 int ExecuteVM() {
+    ConstructBin();
+    InitializeVM();
     Instruction instruction = fetch_instruction();
     bool exit = decode_execute(instruction);
     while (!exit) {

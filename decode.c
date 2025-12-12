@@ -3,18 +3,18 @@
 bool decode_execute(Instruction instruction) {
     switch (instruction.opcode) {
         case STOP: {return stop();}
-        case PUSHI: {return push_i(instruction.operand);}
+        case PUSH: {return push(instruction.operand);}
         case OUT: {return out();}
-        case STOREG: {return store_i(instruction.operand);}
-        case LOADG: {return load_i(instruction.operand);}
-        case ADDI: {return add_i();}
-        case SUBI: {return sub_i();}
-        case MULI: {return mul_i();}
-        case DIVI: {return div_i();}
+        case STOREG: {return store(instruction.operand);}
+        case LOADG: {return load(instruction.operand);}
+        case ADD: {return add();}
+        case SUB: {return sub();}
+        case MUL: {return mul();}
+        case DIV: {return div_();}
         case JMP: {return jmp(instruction.operand);}
         case CALL: {return call(instruction.operand);}
         case RET: {return ret();}
-        case ENTER: {return enter(co_consts[instruction.operand]);}
+        case ENTER: {return enter(co_consts[instruction.operand].value.i32);}
         case LOADA: {return load_a(instruction.operand);}
         case LOADL: {return load_l(instruction.operand);}
         case STOREL: {return store_l(instruction.operand);}

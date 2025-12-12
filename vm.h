@@ -5,81 +5,77 @@
 #include "header.h"
 #include "instruction_set.h"
 #include "utils.h"
+#include "infer_type.h"
+//#include "operations.h"
 
-#define OPERAND_SIZE 2
-#define OPCODE_SIZE 1
+typedef struct Frame {
+    Function *func_ptr;
+    int32_t ip;
+    int32_t ret_addr;
+} Frame;
 
-// typedef enum Opcodes {
-//     STOP = 0,
-//     OUT,
-//     PUSHI,
-//     STOREG,
-//     LOADG,
-//     ADDI,
-//     SUBI,
-//     MULI,
-//     DIVI,
-//     JMP,
-//     CALL,
-//     RET,
-//     ENTER,
-//     LOADA,
-//     LOADL,
-//     STOREL
-// } Opcodes;
+typedef struct VM {
+    Value *stack;
+    int32_t sp;
+    int32_t bp;
+
+    Frame *call_stack;
+    int32_t fp;
+
+    Function *functions;
+    int32_t func_count;
+} VM;
 
 typedef struct Instruction {
     uint8_t opcode;
     int16_t operand;
 } Instruction;
 
-extern int32_t *stack;
-extern int32_t stack_size;
-extern int32_t sp;
-extern int32_t fp;
-extern int32_t ep;
+extern VM vm;
 
-extern int32_t *globals;
+//Storage of Global Variables
+extern Value *globals;
 extern int32_t globals_size;
 
+//Code Array that stores the binary instructions
 extern uint8_t *code;
-extern int32_t code_size;
-extern int32_t ip;
 
-extern int32_t *co_consts;
+//Const table used to refer to constants
+extern Value *co_consts;
 extern int32_t co_consts_size;
 
 #endif
 
+void ConstructBin();
+
+//Virual Machine
 int ExecuteVM();
 
-void push_int(int32_t val);
-int32_t pop_int();
-//void add_op_code(int8_t val);
-void store_globals(int16_t addr, int32_t val);
-int32_t get_globals(int16_t addr);
-Instruction fetch_instruction();
-int8_t oper_size(Opcodes opcode);
-bool decode_execute(Instruction Instruction);
-//int32_t get_op(char* op);
-//int32_t get_code_op(char* op);
-void add_oper_code(int16_t val);
-int16_t search_const(int32_t val);
-//void add_const(int32_t val);
+//Stack Funcs
+void push_val(Value val);
+Value pop_val();
 
-//BC Loader
-//void loadbc(FILE* bc_file);
+//Global Vars Funcs
+void store_globals(int16_t addr, Value val);
+Value get_globals(int16_t addr);
+
+//F-E Cycle Funcs
+Instruction fetch_instruction();
+bool decode_execute(Instruction Instruction);
+
+//Operations
+void perform_operation(Value *total, BinaryOps oper);
 
 // Instructions
 bool stop();
-bool push_i(int16_t val);
+bool push(int16_t val);
 bool out();
-bool store_i(int16_t addr);
-bool load_i(int16_t addr);
-bool add_i();
-bool sub_i();
-bool mul_i();
-bool div_i();
+bool store(int16_t addr);
+bool load(int16_t addr);
+bool add();
+bool sub();
+bool mul();
+bool div_(); //div() is a c lib ig
 bool jmp(int16_t addr);
 bool call(int16_t addr);
 bool ret();

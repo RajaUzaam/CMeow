@@ -1,20 +1,17 @@
 #include "vm.h"
 
-void push_int(int32_t val) {
-    stack = realloc(stack, (++stack_size) * sizeof(int32_t));
-    if (sp >= (stack_size - 1)) {
-        printf("Stack overflow!\n");
-        exit(1);
-    }
-    stack[++sp] = val;
+void push_val(Value val) {
+    vm.stack = realloc(vm.stack, (++vm.sp + 1) * sizeof(Value));
+    vm.stack[vm.sp] = val;
 }
 
-int32_t pop_int() {
-    int32_t pop_val = stack[sp--];
-    stack = realloc(stack, (--stack_size) * sizeof(int32_t));
-    if (sp < -1) {
+Value pop_val() {
+    if (vm.sp < 0) {
         printf("Stack underflow!\n");
         exit(1);
     }
+
+    Value pop_val = vm.stack[vm.sp--];
+
     return pop_val;
 }
