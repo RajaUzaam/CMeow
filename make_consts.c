@@ -39,14 +39,9 @@ void make_consts(FILE* bc_file) {
     while ((c = fgetc(bc_file)) != EOF && get_opc(2, instr) != END) {
         instr_len = (int32_t) strlen(instr);
         if ( (c == ' ' || c == '\n') && (instr[0] != ' ' && instr_len > 1) ) {
-            char* consdata = NULL;
-            readWord(bc_file, &consdata);
             Value val;
-            int32_t exp_type = get_opc(3, instr);
-            if (exp_type >= 0) {
-                if (!make_value(consdata, &val, true, (ValueType)exp_type)) {
-                    printf("Unknown DataType!\n"); exit(1);
-                }
+            if (!make_const(instr, &val)) {
+                printf("Unknown DataType!\n"); exit(1);
             }
             add_const_set(val);
         }

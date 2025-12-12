@@ -13,9 +13,10 @@ void makeHeader() {
     const_table_addr = bin_code_size;
     bin_code_size += 4;
     for (int32_t i = 0; i < _co_consts_size; i++) {
-        if (_co_consts[i].type == INT32) {
-            bin_code_size += 5;
-        }
+        bin_code_size += 1+GetBytes(_co_consts[i].type);
+        // if (_co_consts[i].type == INT32) {
+        //     bin_code_size += 5;
+        // }
     }
     globals_table_addr = bin_code_size;
     bin_code_size += 4;

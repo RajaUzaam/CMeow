@@ -6,10 +6,10 @@ void perform_operation(Value *total, BinaryOps oper) {
     rhs = pop_val();
     lhs = pop_val();
     ans_type = (ValueType) max(rhs.type, lhs.type);
-    total->type = ans_type;
     promote(&rhs, &ans_type);
     promote(&lhs, &ans_type);
-    if (IsInt(ans_type)) {
+    total->type = rhs.type;
+    if (TypeInt(ans_type)) {
         switch (oper) {
             case OPADD: total->value.i64 = lhs.value.i64 + rhs.value.i64; break;
             case OPSUB: total->value.i64 = lhs.value.i64 - rhs.value.i64; break;
@@ -20,7 +20,7 @@ void perform_operation(Value *total, BinaryOps oper) {
             default: printf("Unknown Binary Operation!\n"); exit(1);
         }
     }
-    else if (IsReal(ans_type)) {
+    else if (TypeReal(ans_type)) {
         switch (oper) {
             case OPADD: total->value.r64 = lhs.value.r64 + rhs.value.r64; break;
             case OPSUB: total->value.r64 = lhs.value.r64 - rhs.value.r64; break;

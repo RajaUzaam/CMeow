@@ -95,11 +95,9 @@ void resolve_func_set(bool entry) {
             case PUSH: case ENTER: {
                 add_op_code(&_functions[_func_size-1], opc);
                 Value val;
-                bool test = make_value(func_instr_set[++i], &val, true, DYNAMIC);
-                //printf("FROM MAKE VAL: %d", test);
+                make_const(func_instr_set[++i], &val);
                 add_oper_code(&_functions[_func_size-1], search_const_table(val));
                 _curr_addr += 3;
-                //printf("PUSH A VAL\n");
                 break;
             }
             case STOREG: case LOADG: {
@@ -155,11 +153,9 @@ void make_func(FILE* bc_file, bool entry_point) {
 
     while ((c = fgetc(bc_file)) && c != EOF && (get_opc(2, instr) != END)) {
         if ((c == ' ' || c == '\n') && instr[0] != '\0' && instr != NULL && instr[0] != ' ') {
-            //printf("ADD INSTR: %s\n", instr);
             add_to_table(&func_instr_set, &func_instr_set_size, instr);
         }
         make_instr(&i, &instr, c);
-        //printf("INSTR-> %s | %c\n", instr, c);
     }
     resolve_func_set(entry_point);
     func_instr_set = NULL;

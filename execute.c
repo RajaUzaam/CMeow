@@ -17,7 +17,7 @@ bool out() {
     if (IsInt32(ans.type)) {printf("%d", ans.value.i32);}
     else if (IsInt64(ans.type)) {printf("%lld", ans.value.i64);}
     else if (IsBool(ans.type)) {printf("%d", ans.value.bl);}
-    else if (IsChar(ans.type)) {printf("%d", ans.value.chr);}
+    else if (IsChar(ans.type)) {printf("%c", ans.value.chr);}
     else if (IsR32(ans.type)) {printf("%f", ans.value.r32);}
     else if (IsR64(ans.type)) {printf("%f", ans.value.r64);}
     putchar('\n');

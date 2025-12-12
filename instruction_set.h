@@ -15,7 +15,8 @@
 #define IsLoaderOp(val) (bool)(( val >= 0  && val < LOADER_OPCODES_NUM ) ? true : false)
 #define HasOperand(val) (bool)(( val >= 0 && val < TAKES_OPERAND_NUM ? true : false))
 
-#define PRIMITIVES NONE+1
+#define PRIMITIVES NONE
+#define MAX_TYPE_SUF 5
 #define IsPrimitive(val) (bool)((val >= 0 && val < PRIMITIVES) ? true : false)
 
 typedef enum Opcodes {
@@ -63,7 +64,6 @@ typedef enum BinDumpOpcodes {
 #define IsChar(val)     (bool)(val == CHAR ? true : false)
 #define IsR32(val)      (bool)(val == REAL32 ? true : false)
 #define IsR64(val)      (bool)(val == REAL64 ? true : false)
-//#define RVAL(val) (val.type == INT32 ? val.value.i32 : (val.type == INT64 ? val.value.i64 : (val.type == BOOL ? val.value.bl : (val.type == CHAR ? val.value.chr : (val.type == REAL32 ? val.value.r32 : (val.type == REAL64 ? val.value.r64 : (NULL)))))))
 #define GetBytes(val) (int32_t)(val == BOOL ? 1 : (val == CHAR ? 1 : (val == INT32 ? 4 : (val == INT64 ? 8 : (val == REAL32 ? 4 : (val == REAL64 ? 8 : -1))))))
 
 typedef enum ValueType {
@@ -96,10 +96,6 @@ typedef enum BinaryOps {
 } BinaryOps;
 
 typedef enum LoaderOpcodes {
-    //CONST,//
-    //GLOBAL,//
-    //LOCAL,//
-    //ARG,//
     ARGS = OBJ+1,
     CARGS,
     LOCALS,
@@ -113,11 +109,8 @@ typedef struct Value {
     bool dynamic;
     ValueType type;
     union {
-        //int32_t int_val;
-
-        bool    bl;
-
-        char    chr;
+        uint8_t bl;
+        uint8_t chr;
         int16_t i16;
         int32_t i32;
         int64_t i64;

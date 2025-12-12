@@ -59,7 +59,7 @@ void ExecuteAssembler(FILE* bc_file) {
         //{Only diff is that it notes address in _entry_point and doesn't 
         //make use of function specific Instructions e.g. LOADA}
         else if (!strcmp(instr, "_start")) {
-            //rintf("Loading Start\n");
+            //printf("Loading Start\n");
             make_func(bc_file, true);
         }
 

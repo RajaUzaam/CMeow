@@ -8,6 +8,6 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <stdint.h>
-//#include <regex>
+#include <float.h>
 
 #endif
