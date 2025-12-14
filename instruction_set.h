@@ -65,7 +65,7 @@ typedef enum BinDumpOpcodes {
 #define IsChar(val)     (bool)(val == CHAR ? true : false)
 #define IsR32(val)      (bool)(val == REAL32 ? true : false)
 #define IsR64(val)      (bool)(val == REAL64 ? true : false)
-#define GetBytes(val) (int32_t)(val == BOOL ? 1 : (val == CHAR ? 1 : (val == INT32 ? 4 : (val == INT64 ? 8 : (val == REAL32 ? 4 : (val == REAL64 ? 8 : -1))))))
+#define GetBytes(val) (val == BOOL ? 1 : (val == CHAR ? 1 : (val == INT32 ? 4 : (val == INT64 ? 8 : (val == REAL32 ? 4 : (val == REAL64 ? 8 : -1))))))
 
 typedef enum ValueType {
     //Primitives
@@ -111,7 +111,7 @@ typedef struct Value {
     union {
         uint8_t bl;
         uint8_t chr;
-        int16_t i16;
+
         int32_t i32;
         int64_t i64;
 
@@ -123,12 +123,12 @@ typedef struct Value {
 } Value;
 
 typedef struct Function {
-    int32_t idx;
-    int32_t arg_num;
-    int32_t local_num;
+    uint64_t idx;
+    uint64_t arg_num;
+    uint64_t local_num;
     ValueType *args;
     ValueType *locals;
-    int32_t code_size;
+    uint64_t code_size;
     uint8_t *code;
 } Function;
 
@@ -138,4 +138,4 @@ extern const char type_op_str[1+TYPE_NUM][STD_OPCODE_LEN];
 
 #endif
 
-int32_t get_opc(int32_t type, const char* literal);
+uint64_t get_opc(int8_t type, const char* literal);

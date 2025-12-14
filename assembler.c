@@ -1,40 +1,40 @@
 #include "assembler.h"
 
 uint8_t *bin_code = NULL;
-int64_t bin_code_size = 0;
+uint64_t bin_code_size = 0;
 
 //Array of actual refrence locations
 Reference *refrences = NULL;
-int32_t refrences_size = 0;
+uint64_t refrences_size = 0;
 
 //Array of unresolved(address) locations
 Reference *unresolved_refrences = NULL;
-int32_t unresolved_refrences_size = 0;
+uint64_t unresolved_refrences_size = 0;
 
 //Symbol Table
 char **symbol_table = NULL;
-int32_t symbol_table_size = 0;
+uint64_t symbol_table_size = 0;
 
 ValueType *_globals = NULL;
-int32_t _globals_size = 0;
+uint64_t _globals_size = 0;
 
 Function *_functions = NULL;
-int32_t _func_size = 0;
+uint64_t _func_size = 0;
 
 //Final ByteCode
 //uint8_t *bytecode = NULL;
 
 //Constants Table
 Value *_co_consts = NULL;
-int32_t _co_consts_size = 0;
+uint64_t _co_consts_size = 0;
 
 //Entry point variable
-int32_t _entry_point = 0;
+uint64_t _entry_point = 0;
 
 void ExecuteAssembler(FILE* bc_file) {
     char *instr;
     char c;
-    int32_t i = 0;
+    uint64_t i = 0;
     instr = malloc(sizeof(char));
     instr[0] = '\0';
 

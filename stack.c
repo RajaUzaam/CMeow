@@ -2,6 +2,10 @@
 
 void push_val(Value val) {
     vm.stack = realloc(vm.stack, (++vm.sp + 1) * sizeof(Value));
+    if (!vm.stack) {
+        printf("Stack overflow!\n");
+        exit(1);
+    }
     vm.stack[vm.sp] = val;
 }
 

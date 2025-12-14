@@ -8,8 +8,8 @@ const char type_suffix[PRIMITIVES][MAX_TYPE_SUF] = {
 void analyze_literal(char* literal, char** data, char** suffix) {
     *data = NULL;
     *suffix = NULL;
-    int32_t data_len = 0, suffix_len = 0, i = 0;
-    int32_t str_len = strlen(literal);
+    uint64_t data_len = 0, suffix_len = 0, i = 0;
+    uint64_t str_len = strlen(literal);
     char c;
     while ((c = literal[i]) && ((c >= '0' && c <= '9') || c == '.')) {
         *data = realloc(*data, sizeof(char)*(++data_len));
@@ -30,8 +30,8 @@ void analyze_literal(char* literal, char** data, char** suffix) {
     return;
 }
 
-bool is_int(char* literal, int32_t str_len) {
-    for (int32_t i = 0; i < str_len; i++) {
+bool is_int(char* literal, uint64_t str_len) {
+    for (uint64_t i = 0; i < str_len; i++) {
         if (!isdigit(literal[i])) {
             return false;
         }
@@ -39,9 +39,9 @@ bool is_int(char* literal, int32_t str_len) {
     return true;
 }
 
-bool is_real(char* literal, int32_t str_len) {
+bool is_real(char* literal, uint64_t str_len) {
     bool dec = false;
-    for (int32_t i = 0; i < str_len; i++) {
+    for (uint64_t i = 0; i < str_len; i++) {
         if (!isdigit(literal[i])) {
             if (literal[i] != '.') {return false;}
             else {
@@ -53,7 +53,7 @@ bool is_real(char* literal, int32_t str_len) {
     return dec;
 }
 
-bool is_chr(char* literal, int32_t str_len) {
+bool is_chr(char* literal, uint64_t str_len) {
     if (str_len == 3 && isascii(literal[1]) && literal[0] == '\'' && literal[2] == '\'') 
         {return true;}
     return false;
@@ -75,8 +75,8 @@ bool is_bl(char* literal) {
 // }
 
 bool valid_num(char* literal, bool *dec) {
-    int32_t len = strlen(literal);
-    for (int32_t i = 0; i < len; i++) {
+    uint64_t len = (uint64_t) strlen(literal);
+    for (uint64_t i = 0; i < len; i++) {
         if (!isdigit(literal[i])) {
             if (literal[i] != '.') {return false;}
             else {
@@ -92,7 +92,7 @@ TypeRepresentation check_type(char* literal) {
     char* data = NULL;
     char* suffix = NULL;
     analyze_literal(literal, &data, &suffix);
-    int32_t str_len = strlen(literal);
+    uint64_t str_len = strlen(literal);
     TypeRepresentation res;
     res.data = NULL; res.suffixed = false; res.type = -1;
     res.data = literal;

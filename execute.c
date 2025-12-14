@@ -2,7 +2,7 @@
 
 bool stop() {return true;}
 
-bool push(int16_t addr) {
+bool push(uint64_t addr) {
     push_val(co_consts[addr]);
     return false;
 }
@@ -25,13 +25,13 @@ bool out() {
     return false;
 }
 
-bool store(int16_t addr) {
+bool store(uint64_t addr) {
     Value store_val = pop_val();
     store_globals(addr, store_val);
     return false;
 }
 
-bool load(int16_t addr) {
+bool load(uint64_t addr) {
     Value global = get_globals(addr);
     push_val(global);
     return false;
@@ -69,7 +69,7 @@ bool leave() {
     return false;
 }
 
-bool call(int16_t addr) {
+bool call(uint64_t addr) {
     push_val((Value) {.type=INT32, .value.i32=vm.bp});
     vm.bp = vm.sp;
     vm.fp++;
@@ -89,30 +89,30 @@ bool ret() {
     return false;
 }
 
-bool load_a(int16_t addr) {
+bool load_a(uint64_t addr) {
     push_val(vm.stack[vm.bp - 1 - addr]);
     return false;
 }
-bool enter(int32_t val) {
-    for (int32_t i = 0; i < val; i++) {
+bool enter(uint64_t val) {
+    for (uint64_t i = 0; i < val; i++) {
         push_val((Value) {.type=INT32, .value.i32=-1});
     }
     return false;
 }
 
-bool load_l(int16_t addr) {
+bool load_l(uint64_t addr) {
     Value to_push = vm.stack[vm.bp + 1 + addr];
     push_val(to_push);
     return false;
 }
 
-bool store_l(int16_t addr) {
+bool store_l(uint64_t addr) {
     Value to_store = pop_val();
     vm.stack[vm.bp + 1 + addr] = to_store;
     return false;
 }
 
-bool jmp(int16_t addr) {
+bool jmp(int64_t addr) {
     vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (OPCODE_SIZE + OPERAND_SIZE)) + addr;
     return false;
 }

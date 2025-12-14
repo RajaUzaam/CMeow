@@ -1,16 +1,16 @@
 #include "assembler.h"
 
 char** func_instr_set = NULL;
-int32_t func_instr_set_size = 0;
+uint64_t func_instr_set_size = 0;
 
 char** local_symbol_table = NULL;
-int32_t local_symbol_table_size = 0;
+uint64_t local_symbol_table_size = 0;
 
 char** arg_symbol_table = NULL;
-int32_t arg_symbol_table_size = 0;
+uint64_t arg_symbol_table_size = 0;
 
-int16_t search_table(char* symbol, char*** table, int32_t* table_size) {
-    for (int32_t i = 0; i < (*table_size); i++) {
+uint64_t search_table(char* symbol, char*** table, uint64_t* table_size) {
+    for (uint64_t i = 0; i < (*table_size); i++) {
         if (!strcmp((*table)[i], symbol)) {
             return i;
         }
@@ -18,7 +18,7 @@ int16_t search_table(char* symbol, char*** table, int32_t* table_size) {
     return -1;
 }
 
-void val_to_table(ValueType** table, int32_t *table_size, ValueType val) {
+void val_to_table(ValueType** table, uint64_t *table_size, ValueType val) {
     (*table_size)++;
     (*table) = realloc((*table), (*table_size) * sizeof(char*));
     if (!(*table)) {
@@ -29,9 +29,9 @@ void val_to_table(ValueType** table, int32_t *table_size, ValueType val) {
 }
 
 void resolve_func_set(bool entry) {
-    int32_t j = 0;
-    int32_t _curr_addr = 0;
-    int32_t opc;
+    uint64_t j = 0;
+    uint64_t _curr_addr = 0;
+    uint8_t opc;
 
     if (!entry) {
     while ((opc = get_opc(2, func_instr_set[j])) != START) {
@@ -68,21 +68,21 @@ void resolve_func_set(bool entry) {
         _entry_point = _func_size-1;
     }
 
-    for (int32_t i = (j+1); i < func_instr_set_size; i++) {
+    for (uint64_t i = (j+1); i < func_instr_set_size; i++) {
         opc = get_code_op(func_instr_set[i]);
         if (!entry) {
             switch (opc) {
                 case LOADL: case STOREL: {
                     add_op_code(&_functions[_func_size-1], opc);
                     add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &local_symbol_table, &local_symbol_table_size));
-                    _curr_addr += 3;
+                    _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                     goto next;
                     break;
                 }
                 case LOADA: {
                     add_op_code(&_functions[_func_size-1], opc);
                     add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &arg_symbol_table, &arg_symbol_table_size));
-                    _curr_addr += 3;
+                    _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                     goto next;
                     break;
                 }
@@ -97,36 +97,36 @@ void resolve_func_set(bool entry) {
                 Value val;
                 make_const(func_instr_set[++i], &val, add_const);
                 add_oper_code(&_functions[_func_size-1], search_const_table(val));
-                _curr_addr += 3;
+                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                 break;
             }
             case STOREG: case LOADG: {
                 add_op_code(&_functions[_func_size-1], opc);
                 add_oper_code(&_functions[_func_size-1], search_symbol(func_instr_set[++i]));
-                _curr_addr += 3;
+                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                 break;
             }
             case JMP: {
                 add_op_code(&_functions[_func_size-1], JMP);
                 create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, JMP_REF);
                 add_oper_code(&_functions[_func_size-1], -1);
-                _curr_addr += 3;
+                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                 break;
             }
             case CALL: {
                 add_op_code(&_functions[_func_size-1], CALL);
                 create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, FUNC_REF);
                 add_oper_code(&_functions[_func_size-1], -1);
-                _curr_addr += 3;
+                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                 break;
             }
-            case -1: {
+            case (uint8_t)-1: {
                 create_ref(func_instr_set[i], _func_size-1, _curr_addr, JMP_REF);
                 break;
             }
             default: {
                 add_op_code(&_functions[_func_size-1], opc);
-                _curr_addr += 1;
+                _curr_addr += OPCODE_SIZE;
                 break;
             }
         }
@@ -137,7 +137,7 @@ void resolve_func_set(bool entry) {
 void make_func(FILE* bc_file, bool entry_point) {
     char c;
     char *instr;
-    int32_t i = 0;
+    uint64_t i = 0;
     instr = malloc(sizeof(char));
     instr[0] = '\0';
 

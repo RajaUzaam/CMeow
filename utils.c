@@ -7,7 +7,7 @@ char* trim(char* str) {
     return str;
 }
 
-void make_instr(int32_t *len, char **instr, char c) {
+void make_instr(uint64_t *len, char **instr, char c) {
     if (c != ' ' && c != '\n') {
         (*instr) = realloc((*instr), (*len)+2);
         (*instr)[(*len)++] = c;
@@ -18,7 +18,7 @@ void make_instr(int32_t *len, char **instr, char c) {
     }
 }
 
-void add_to_table(char*** table, int32_t *table_size, char* str) {
+void add_to_table(char*** table, uint64_t *table_size, char* str) {
     (*table_size)++;
     (*table) = realloc((*table), (*table_size) * sizeof(char*));
     if (!(*table)) {
@@ -26,7 +26,7 @@ void add_to_table(char*** table, int32_t *table_size, char* str) {
         exit(1);
     }
 
-    int32_t symbol_len = strlen(str);
+    uint64_t symbol_len = strlen(str);
     (*table)[(*table_size) - 1] = malloc(symbol_len + 1);
     if (!(*table)[(*table_size) - 1]) {
         perror("malloc failed");

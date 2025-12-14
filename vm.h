@@ -10,39 +10,39 @@
 
 typedef struct Frame {
     Function *func_ptr;
-    int32_t ip;
-    int32_t ret_addr;
+    int64_t ip;
+    int64_t ret_addr;
 } Frame;
 
 typedef struct VM {
     Value *stack;
-    int32_t sp;
-    int32_t bp;
+    int64_t sp;
+    int64_t bp;
 
     Frame *call_stack;
-    int32_t fp;
+    int64_t fp;
 
     Function *functions;
-    int32_t func_count;
+    uint64_t func_count;
 } VM;
 
 typedef struct Instruction {
     uint8_t opcode;
-    int16_t operand;
+    int64_t operand;
 } Instruction;
 
 extern VM vm;
 
 //Storage of Global Variables
 extern Value *globals;
-extern int32_t globals_size;
+extern uint64_t globals_size;
 
 //Code Array that stores the binary instructions
 extern uint8_t *code;
 
 //Const table used to refer to constants
 extern Value *co_consts;
-extern int32_t co_consts_size;
+extern uint64_t co_consts_size;
 
 #endif
 
@@ -56,8 +56,8 @@ void push_val(Value val);
 Value pop_val();
 
 //Global Vars Funcs
-void store_globals(int16_t addr, Value val);
-Value get_globals(int16_t addr);
+void store_globals(uint64_t addr, Value val);
+Value get_globals(uint64_t addr);
 
 //F-E Cycle Funcs
 Instruction fetch_instruction();
@@ -68,18 +68,18 @@ void perform_operation(Value *total, BinaryOps oper);
 
 // Instructions
 bool stop();
-bool push(int16_t val);
+bool push(uint64_t addr);
 bool out();
-bool store(int16_t addr);
-bool load(int16_t addr);
+bool store(uint64_t addr);
+bool load(uint64_t addr);
 bool add();
 bool sub();
 bool mul();
 bool div_(); //div() is a c lib ig
-bool jmp(int16_t addr);
-bool call(int16_t addr);
+bool jmp(int64_t addr);
+bool call(uint64_t addr);
 bool ret();
-bool load_a(int16_t addr);
-bool enter(int32_t val);
-bool load_l(int16_t addr);
-bool store_l(int16_t addr);
+bool load_a(uint64_t addr);
+bool enter(uint64_t val);
+bool load_l(uint64_t addr);
+bool store_l(uint64_t addr);

@@ -1,6 +1,6 @@
 #include "assembler.h"
 
-void create_unresolved_ref(char *name, int32_t func_addr, int32_t addr, RefType type) {
+void create_unresolved_ref(char *name, uint64_t func_addr, uint64_t addr, RefType type) {
     unresolved_refrences = realloc(unresolved_refrences, (++unresolved_refrences_size) * sizeof(Reference));
     unresolved_refrences[unresolved_refrences_size-1].name = _strdup(name);
     unresolved_refrences[unresolved_refrences_size-1].func_idx = func_addr;
@@ -8,7 +8,7 @@ void create_unresolved_ref(char *name, int32_t func_addr, int32_t addr, RefType 
     unresolved_refrences[unresolved_refrences_size-1].type = type;
 }
 
-void create_ref(char *name, int32_t func_addr, int32_t addr, RefType type) {
+void create_ref(char *name, uint64_t func_addr, uint64_t addr, RefType type) {
     refrences = realloc(refrences, (++refrences_size) * sizeof(Reference));
     refrences[refrences_size-1].name = _strdup(name);
     refrences[refrences_size-1].addr = addr;
@@ -16,8 +16,8 @@ void create_ref(char *name, int32_t func_addr, int32_t addr, RefType type) {
     refrences[refrences_size-1].type = type;
 }
 
-int32_t search_refs(char* name, RefType type, bool *found) {
-    for (int32_t i = 0; i < refrences_size; i++) {
+uint64_t search_refs(char* name, RefType type, bool *found) {
+    for (uint64_t i = 0; i < refrences_size; i++) {
         if (!strcmp(refrences[i].name, name) && (refrences[i].type == type)) {
             *found = true;
             return i;
@@ -36,9 +36,9 @@ void resolve_refs() {
     //     printf("Name: %s | FuncAddr: %d | CodeAddr: %d | Type: %d\n", unresolved_refrences[i].name, unresolved_refrences[i].func_idx, unresolved_refrences[i].addr, unresolved_refrences[i].type);
     // }
     bool found;
-    int32_t found_addr;
-    int16_t relative_addr;
-    for (int32_t i = 0; i < unresolved_refrences_size; i++) {
+    uint64_t found_addr;
+    int64_t relative_addr;
+    for (uint64_t i = 0; i < unresolved_refrences_size; i++) {
         found_addr = search_refs(unresolved_refrences[i].name, unresolved_refrences[i].type, &found);
         if (found) {
             if (unresolved_refrences[i].type == JMP_REF) {

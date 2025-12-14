@@ -62,9 +62,9 @@ typedef enum {
 } OpTableType;
 
 // Lookup opcode index in the given table type
-int32_t get_opc(int32_t table_type, const char *literal) {
+uint64_t get_opc(int8_t table_type, const char *literal) {
     const char (*search_arr)[STD_OPCODE_LEN] = NULL;
-    int32_t arr_size = 0;
+    uint64_t arr_size = 0;
 
     switch (table_type) {
         case OPCODE_MAIN:
@@ -83,7 +83,7 @@ int32_t get_opc(int32_t table_type, const char *literal) {
             return -1; // invalid table type
     }
 
-    for (int32_t i = 0; i < arr_size; i++) {
+    for (uint64_t i = 0; i < arr_size; i++) {
         if (strcmp(search_arr[i], literal) == 0) {
             // Preserve your original adjustment for loader table
             if (table_type == OPCODE_LOADER) {
