@@ -18,7 +18,12 @@ bool decode_execute(Instruction instruction) {
         case LOADA: {return load_a(instruction.operand);}
         case LOADL: {return load_l(instruction.operand);}
         case STOREL: {return store_l(instruction.operand);}
+        case LEAVE: {return leave();}
+        //case ESIZE: {return e_size(instruction.operand);}
         default: {
+            if (IsESIZE(instruction.opcode)) {
+                return e_size(instruction.opcode);
+            }
             printf("Unknown Instruction\n");
             return 0;
         }

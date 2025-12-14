@@ -6,7 +6,11 @@ END
 
 _start
 START
+JMP start
 PUSH #50i
+OUT
+start
+PUSH #40i
 OUT
 STOP
 END

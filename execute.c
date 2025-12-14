@@ -123,7 +123,12 @@ uint64_t ipow(uint64_t base, uint64_t exp) {
 }
 
 bool jmp(uint64_t addr) {
-    int64_t jmp_addr = ((int64_t) (-1 * ipow(2, 8*OPERAND_SIZE))) + addr;
-    vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (OPCODE_SIZE + OPERAND_SIZE)) + (jmp_addr);
+    int64_t jmp_addr = ((int64_t) (-(GET_BIT(addr, (operand_size*8)-1)) * ipow(2, 8*operand_size))) + addr;
+    vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (WORD + operand_size)) + (jmp_addr);
+    return false;
+}
+
+bool e_size(uint64_t val) {
+    operand_size = (uint8_t) WORD + (val - (ESIZE1-1));
     return false;
 }

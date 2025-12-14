@@ -16,11 +16,19 @@ const char op_str[OPCODES_NUM][STD_OPCODE_LEN] = {
 
     //Doesn't have Operands
     "STOP",
+    "ESIZE1",
+    "ESIZE2",
+    "ESIZE3",
+    "ESIZE4",
+    "ESIZE5",
+    "ESIZE6",
+    "ESIZE7",
     "OUT",
     "ADD",
     "SUB",
     "MUL",
     "DIV",
+    "LEAVE",
     "RET"
 };
 

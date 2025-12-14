@@ -9,6 +9,7 @@
 #define STD_OPCODE_LEN 12
 #define OPERAND_SIZE 1//Bytes
 #define OPCODE_SIZE 1//Byte
+#define WORD 1
 #define TYPE_NUM OBJ
 
 #define IsOpcode(val) (bool)(( val >= 0 && val < OPCODES_NUM ) ?  true : false)
@@ -19,10 +20,12 @@
 #define MAX_TYPE_SUF 5
 #define IsPrimitive(val) (bool)((val >= 0 && val < PRIMITIVES) ? true : false)
 
+#define GET_BIT(x, n) (((x) >> (n)) & 1u)
+#define IsESIZE(val) (bool)((val >= ESIZE1 && val <= ESIZE7) ? true : false)
+
 typedef enum Opcodes {
     //Has Operands
     PUSH,
-    //SIZE,
     STOREG,
     LOADG,
     JMP,
@@ -36,11 +39,22 @@ typedef enum Opcodes {
 
     //Doesnt have Operands
     STOP,
+
+    //For variable length encoding
+    ESIZE1,
+    ESIZE2,
+    ESIZE3,
+    ESIZE4,
+    ESIZE5,
+    ESIZE6,
+    ESIZE7,
+
     OUT,
     ADD,
     SUB,
     MUL,
     DIV,
+    LEAVE,
     RET
 } Opcodes;
 

@@ -44,6 +44,9 @@ extern uint8_t *code;
 extern Value *co_consts;
 extern uint64_t co_consts_size;
 
+//extern uint8_t EOSB;
+extern uint8_t operand_size;
+
 #endif
 
 void ConstructBin();
@@ -83,3 +86,5 @@ bool load_a(uint64_t addr);
 bool enter(uint64_t val);
 bool load_l(uint64_t addr);
 bool store_l(uint64_t addr);
+bool leave();
+bool e_size(uint64_t val);

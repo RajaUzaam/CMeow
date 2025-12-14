@@ -20,6 +20,14 @@ typedef struct Reference {
     RefType type;
 } Reference;
 
+typedef struct ExtendOper {
+    uint64_t func_idx;
+    uint64_t addr;
+    uint8_t bytes;
+} ExtendOper;
+
+extern ExtendOper* extensions;
+
 extern uint8_t *bin_code;
 extern uint64_t bin_code_size;
 
@@ -42,7 +50,7 @@ extern Function *_functions;
 extern uint64_t _func_size;
 
 //Final ByteCode
-extern uint8_t *bytecode;
+//extern uint8_t *bytecode;
 
 //Constants Table
 extern Value *_co_consts;

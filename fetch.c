@@ -6,17 +6,20 @@ Instruction fetch_instruction() {
     Frame *frame = &vm.call_stack[vm.fp];
     Function *fn = frame->func_ptr;
 
-    uint8_t opcode = fn->code[frame->ip++];
-    uint8_t operand = 0;
+    uint8_t opcode = fn->code[frame->ip];
+    frame->ip += WORD;
+    uint64_t operand = 0;
 
     if (HasOperand(opcode)) {
-        if (frame->ip + OPERAND_SIZE > fn->code_size) {
+        if (frame->ip + operand_size > fn->code_size) {
             printf("Error: Truncated bytecode operand.\n");
             exit(1);
         }
-        operand = fn->code[frame->ip++];
+        memcpy(&operand, &fn->code[frame->ip], operand_size);
+        frame->ip += operand_size;
     }
+    operand_size = WORD;
     new_instruction.opcode = opcode;
-    new_instruction.operand = (uint64_t) operand;
+    new_instruction.operand = operand;
     return new_instruction;
 }
