@@ -69,7 +69,7 @@ void resolve_func_set(bool entry) {
     }
 
     for (uint64_t i = (j+1); i < func_instr_set_size; i++) {
-        opc = get_code_op(func_instr_set[i]);
+        opc = get_opc(1, func_instr_set[i]);
         if (!entry) {
             switch (opc) {
                 case LOADL: case STOREL: {

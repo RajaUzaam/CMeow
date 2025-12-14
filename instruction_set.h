@@ -138,4 +138,4 @@ extern const char type_op_str[1+TYPE_NUM][STD_OPCODE_LEN];
 
 #endif
 
-uint64_t get_opc(int8_t type, const char* literal);
+uint8_t get_opc(int8_t type, const char* literal);

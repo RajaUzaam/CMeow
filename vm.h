@@ -28,7 +28,7 @@ typedef struct VM {
 
 typedef struct Instruction {
     uint8_t opcode;
-    int64_t operand;
+    uint64_t operand;
 } Instruction;
 
 extern VM vm;
@@ -76,7 +76,7 @@ bool add();
 bool sub();
 bool mul();
 bool div_(); //div() is a c lib ig
-bool jmp(int64_t addr);
+bool jmp(uint64_t addr);
 bool call(uint64_t addr);
 bool ret();
 bool load_a(uint64_t addr);

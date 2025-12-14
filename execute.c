@@ -112,7 +112,18 @@ bool store_l(uint64_t addr) {
     return false;
 }
 
-bool jmp(int64_t addr) {
-    vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (OPCODE_SIZE + OPERAND_SIZE)) + addr;
+uint64_t ipow(uint64_t base, uint64_t exp) {
+    uint64_t result = 1;
+    while (exp) {
+        if (exp & 1) result *= base;
+        base *= base;
+        exp >>= 1;
+    }
+    return result;
+}
+
+bool jmp(uint64_t addr) {
+    int64_t jmp_addr = ((int64_t) (-1 * ipow(2, 8*OPERAND_SIZE))) + addr;
+    vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (OPCODE_SIZE + OPERAND_SIZE)) + (jmp_addr);
     return false;
 }

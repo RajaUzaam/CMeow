@@ -62,7 +62,7 @@ typedef enum {
 } OpTableType;
 
 // Lookup opcode index in the given table type
-uint64_t get_opc(int8_t table_type, const char *literal) {
+uint8_t get_opc(int8_t table_type, const char *literal) {
     const char (*search_arr)[STD_OPCODE_LEN] = NULL;
     uint64_t arr_size = 0;
 

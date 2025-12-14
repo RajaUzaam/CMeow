@@ -8,6 +8,9 @@ uint64_t search_const_table(Value val) {
         else if (val.type == BOOL && _co_consts[i].value.bl == val.value.bl) { return i; }
         else if (val.type == REAL32 && _co_consts[i].value.r32 == val.value.r32) { return i; }
         else if (val.type == REAL64 && _co_consts[i].value.r64 == val.value.r64) { return i; }
+        else {
+            printf("Type not supported yet!\n"); exit(1);
+        }
     }
     return -1;
 }
