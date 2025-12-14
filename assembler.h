@@ -21,12 +21,17 @@ typedef struct Reference {
 } Reference;
 
 typedef struct ExtendOper {
-    uint64_t func_idx;
     uint64_t addr;
-    uint8_t bytes;
+    uint8_t type;
 } ExtendOper;
 
-extern ExtendOper* extensions;
+typedef struct Extension {
+    uint64_t extensions_size;
+    ExtendOper* extensions;
+} Extension;
+
+extern Extension** extensions;
+extern int64_t extensions_size;
 
 extern uint8_t *bin_code;
 extern uint64_t bin_code_size;
@@ -87,3 +92,6 @@ void add_const(Value val);
 void create_unresolved_ref(char *name, uint64_t func_addr, uint64_t addr, RefType type);
 void create_ref(char *name, uint64_t func_addr, uint64_t addr, RefType type);
 void resolve_refs();
+
+//Variable Length Operands Handler
+uint64_t make_extension(uint64_t func_idx, uint64_t addr, uint64_t val);

@@ -31,6 +31,10 @@ uint64_t _co_consts_size = 0;
 //Entry point variable
 uint64_t _entry_point = 0;
 
+
+Extension** extensions = NULL;
+int64_t extensions_size = 0;
+
 void ExecuteAssembler(FILE* bc_file) {
     char *instr;
     char c;

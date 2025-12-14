@@ -150,6 +150,10 @@ void make_func(FILE* bc_file, bool entry_point) {
     _functions[_func_size - 1].code = NULL;
     _functions[_func_size - 1].idx = _func_size-1;
 
+    extensions = realloc(extensions, sizeof(Extension) * _func_size);
+    extensions[_func_size - 1] = malloc(sizeof(Extension));
+    extensions[_func_size - 1]->extensions = NULL;
+    extensions[_func_size - 1]->extensions_size = 0;
 
     while ((c = fgetc(bc_file)) && c != EOF && (get_opc(2, instr) != END)) {
         if ((c == ' ' || c == '\n') && instr[0] != '\0' && instr != NULL && instr[0] != ' ') {

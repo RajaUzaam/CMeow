@@ -81,8 +81,12 @@ void writeGlobals() {
 uint64_t curr_bytecode_addr = 0;
 uint64_t curr_func_addr = 0;
 
-void writeByteCode(uint8_t** src_code, uint64_t* src_code_size, uint8_t** dest_code, uint64_t* dest_code_addr) {
+void writeByteCode(uint64_t func_idx, uint8_t** src_code, uint64_t* src_code_size, uint8_t** dest_code, uint64_t* dest_code_addr) {
+    uint64_t curr_ext_idx = 0;
     for (uint64_t i = 0; i < *src_code_size; i++) {
+        if (extensions[func_idx]->extensions_size > 0 && extensions[func_idx]->extensions[curr_ext_idx].addr == i) {
+            (*dest_code)[(*dest_code_addr)++] = extensions[func_idx]->extensions[curr_ext_idx].type;
+        }
         (*dest_code)[(*dest_code_addr)++] = (*src_code)[i];
     }
 }
@@ -96,25 +100,25 @@ void writeFuncs() {
         if (i == _entry_point) {
             bin_code[curr_func_addr++] = 0xFF;
             bin_code[curr_func_addr++] = INDEX;
-            memcpy(&bin_code[curr_func_addr], &_functions[i].idx, sizeof(int32_t));
-            curr_func_addr += sizeof(int32_t);
+            memcpy(&bin_code[curr_func_addr], &_functions[i].idx, sizeof(uint32_t));
+            curr_func_addr += sizeof(uint32_t);
             bin_code[curr_func_addr++] = CODE_OFFSET;
-            memcpy(&bin_code[curr_func_addr], &curr_bytecode_addr, sizeof(int64_t));
-            curr_func_addr += sizeof(int64_t);
+            memcpy(&bin_code[curr_func_addr], &curr_bytecode_addr, sizeof(uint64_t));
+            curr_func_addr += sizeof(uint64_t);
             bin_code[curr_func_addr++] = CODE_SIZE;
-            memcpy(&bin_code[curr_func_addr], &_functions[i].code_size, sizeof(int32_t));
-            curr_func_addr += sizeof(int32_t);
-            writeByteCode(&_functions[i].code, &_functions[i].code_size, &bin_code, &curr_bytecode_addr);
+            memcpy(&bin_code[curr_func_addr], &_functions[i].code_size, sizeof(uint32_t));
+            curr_func_addr += sizeof(uint32_t);
+            writeByteCode(i, &_functions[i].code, &_functions[i].code_size, &bin_code, &curr_bytecode_addr);
         } else {
             bin_code[curr_func_addr++] = INDEX;
-            memcpy(&bin_code[curr_func_addr], &_functions[i].idx, sizeof(int32_t));
-            curr_func_addr += sizeof(int32_t);
+            memcpy(&bin_code[curr_func_addr], &_functions[i].idx, sizeof(uint32_t));
+            curr_func_addr += sizeof(uint32_t);
             bin_code[curr_func_addr++] = CODE_OFFSET;
-            memcpy(&bin_code[curr_func_addr], &curr_bytecode_addr, sizeof(int64_t));
-            curr_func_addr += sizeof(int64_t);
+            memcpy(&bin_code[curr_func_addr], &curr_bytecode_addr, sizeof(uint64_t));
+            curr_func_addr += sizeof(uint64_t);
             bin_code[curr_func_addr++] = CODE_SIZE;
-            memcpy(&bin_code[curr_func_addr], &_functions[i].code_size, sizeof(int32_t));
-            curr_func_addr += sizeof(int32_t);
+            memcpy(&bin_code[curr_func_addr], &_functions[i].code_size, sizeof(uint32_t));
+            curr_func_addr += sizeof(uint32_t);
 
             //ARGS
             bin_code[curr_func_addr++] = ARGS;
@@ -131,7 +135,7 @@ void writeFuncs() {
             for (uint64_t j = 0; j < _functions[i].local_num; j++) {
                 bin_code[curr_func_addr++] = _functions[i].locals[j];
             }
-            writeByteCode(&_functions[i].code, &_functions[i].code_size, &bin_code, &curr_bytecode_addr);
+            writeByteCode(i, &_functions[i].code, &_functions[i].code_size, &bin_code, &curr_bytecode_addr);
         }
     }
 }
