@@ -8,6 +8,16 @@
 #include "infer_type.h"
 //#include "operations.h"
 
+typedef struct Function {
+    uint64_t idx;
+    uint64_t arg_num;
+    uint64_t local_num;
+    ValueType *args;
+    ValueType *locals;
+    uint64_t code_size;
+    uint8_t *code;
+} Function;
+
 typedef struct Frame {
     Function *func_ptr;
     int64_t ip;

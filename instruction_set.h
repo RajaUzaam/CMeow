@@ -136,16 +136,6 @@ typedef struct Value {
     } value;
 } Value;
 
-typedef struct Function {
-    uint64_t idx;
-    uint64_t arg_num;
-    uint64_t local_num;
-    ValueType *args;
-    ValueType *locals;
-    uint64_t code_size;
-    uint8_t *code;
-} Function;
-
 extern const char op_str[OPCODES_NUM][STD_OPCODE_LEN];
 extern const char loader_op_str[LOADER_OPCODES_NUM][STD_OPCODE_LEN];
 extern const char type_op_str[1+TYPE_NUM][STD_OPCODE_LEN];

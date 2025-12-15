@@ -12,6 +12,25 @@ typedef enum RefType {
     FUNC_REF
 } RefType;
 
+typedef struct AInstruction {
+    uint64_t addr;
+    uint8_t oper_size;
+    uint8_t opcode;
+    uint8_t* operand;
+} AInstruction;
+
+typedef struct AFunction {
+    uint64_t idx;
+    uint64_t arg_num;
+    uint64_t local_num;
+    ValueType *args;
+    ValueType *locals;
+    uint64_t code_size;
+    uint8_t *code;
+    uint64_t instr_num;
+    AInstruction* instructions;
+} AFunction;
+
 //Struct for handling a single refrence
 typedef struct Reference {
     char* name;
@@ -25,13 +44,13 @@ typedef struct ExtendOper {
     uint8_t type;
 } ExtendOper;
 
-typedef struct Extension {
-    uint64_t extensions_size;
-    ExtendOper* extensions;
-} Extension;
+// typedef struct Extension {
+//     uint64_t extensions_size;
+//     ExtendOper* extensions;
+// } Extension;
 
-extern Extension** extensions;
-extern int64_t extensions_size;
+// extern Extension** extensions;
+// extern int64_t extensions_size;
 
 extern uint8_t *bin_code;
 extern uint64_t bin_code_size;
@@ -51,7 +70,7 @@ extern uint64_t symbol_table_size;
 extern ValueType *_globals;
 extern uint64_t _globals_size;
 
-extern Function *_functions;
+extern AFunction *_functions;
 extern uint64_t _func_size;
 
 //Final ByteCode
@@ -81,8 +100,8 @@ void make_func(FILE* bc_file, bool entry_point);
 uint64_t search_symbol(char* symbol);
 
 //Code Table
-void add_op_code(Function* func, Opcodes val);
-void add_oper_code(Function* func, int64_t val);
+void add_op_code(AFunction* func, Opcodes val);
+void add_oper_code(AFunction* func, uint64_t val, uint64_t ext_bytes);
 
 //Const Table
 uint64_t search_const_table(Value val);

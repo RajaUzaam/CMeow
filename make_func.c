@@ -74,14 +74,14 @@ void resolve_func_set(bool entry) {
             switch (opc) {
                 case LOADL: case STOREL: {
                     add_op_code(&_functions[_func_size-1], opc);
-                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &local_symbol_table, &local_symbol_table_size));
+                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &local_symbol_table, &local_symbol_table_size), 0);
                     _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                     goto next;
                     break;
                 }
                 case LOADA: {
                     add_op_code(&_functions[_func_size-1], opc);
-                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &arg_symbol_table, &arg_symbol_table_size));
+                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &arg_symbol_table, &arg_symbol_table_size), 0);
                     _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                     goto next;
                     break;
@@ -93,30 +93,38 @@ void resolve_func_set(bool entry) {
         }
         switch (opc) {
             case PUSH: case ENTER: {
-                add_op_code(&_functions[_func_size-1], opc);
                 Value val;
                 make_const(func_instr_set[++i], &val, add_const);
-                add_oper_code(&_functions[_func_size-1], search_const_table(val));
-                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
+                uint64_t idx = search_const_table(val);
+                uint64_t ext_needed = make_extension(_func_size-1, _curr_addr, idx);
+                printf("EXT NEEDED: %lld | %llu\n", val.value.i64, ext_needed);
+                if (ext_needed > 0) {
+                    printf("EXT1 IIS NEEDED\n");
+                    add_op_code(&_functions[_func_size-1], ext_needed+(ESIZE1-1));
+                    _curr_addr++;
+                }
+                add_op_code(&_functions[_func_size-1], opc);
+                add_oper_code(&_functions[_func_size-1], idx, ext_needed);
+                _curr_addr += OPCODE_SIZE + OPERAND_SIZE + ext_needed;
                 break;
             }
             case STOREG: case LOADG: {
                 add_op_code(&_functions[_func_size-1], opc);
-                add_oper_code(&_functions[_func_size-1], search_symbol(func_instr_set[++i]));
+                add_oper_code(&_functions[_func_size-1], search_symbol(func_instr_set[++i]), 0);
                 _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                 break;
             }
             case JMP: {
                 add_op_code(&_functions[_func_size-1], JMP);
                 create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, JMP_REF);
-                add_oper_code(&_functions[_func_size-1], -1);
+                add_oper_code(&_functions[_func_size-1], -1, 0);
                 _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                 break;
             }
             case CALL: {
                 add_op_code(&_functions[_func_size-1], CALL);
                 create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, FUNC_REF);
-                add_oper_code(&_functions[_func_size-1], -1);
+                add_oper_code(&_functions[_func_size-1], -1, 0);
                 _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
                 break;
             }
@@ -141,7 +149,7 @@ void make_func(FILE* bc_file, bool entry_point) {
     instr = malloc(sizeof(char));
     instr[0] = '\0';
 
-    _functions = realloc(_functions, sizeof(Function) * (++_func_size));
+    _functions = realloc(_functions, sizeof(AFunction) * (++_func_size));
     _functions[_func_size - 1].arg_num = 0;
     _functions[_func_size - 1].local_num = 0;
     _functions[_func_size - 1].locals = NULL;
@@ -149,11 +157,13 @@ void make_func(FILE* bc_file, bool entry_point) {
     _functions[_func_size - 1].code_size = 0;
     _functions[_func_size - 1].code = NULL;
     _functions[_func_size - 1].idx = _func_size-1;
+    _functions[_func_size - 1].instr_num = 0;
+    _functions[_func_size - 1].instructions = NULL;
 
-    extensions = realloc(extensions, sizeof(Extension) * _func_size);
-    extensions[_func_size - 1] = malloc(sizeof(Extension));
-    extensions[_func_size - 1]->extensions = NULL;
-    extensions[_func_size - 1]->extensions_size = 0;
+    // extensions = realloc(extensions, sizeof(Extension) * _func_size);
+    // extensions[_func_size - 1] = malloc(sizeof(Extension));
+    // extensions[_func_size - 1]->extensions = NULL;
+    // extensions[_func_size - 1]->extensions_size = 0;
 
     while ((c = fgetc(bc_file)) && c != EOF && (get_opc(2, instr) != END)) {
         if ((c == ' ' || c == '\n') && instr[0] != '\0' && instr != NULL && instr[0] != ' ') {
@@ -169,7 +179,7 @@ void make_func(FILE* bc_file, bool entry_point) {
     local_symbol_table_size = 0;
     arg_symbol_table_size = 0;
     // printf("Making Function, success\nFinal Verdict:-\n");
-    // Function a_func = _functions[_func_size-1];
+    AFunction a_func = _functions[_func_size-1];
     // printf("ArgNum: %d\n", a_func.arg_num);
     // printf("LocalNum: %d\n", a_func.local_num);
     // printf("CodeSize: %d\n", a_func.code_size);
@@ -183,9 +193,9 @@ void make_func(FILE* bc_file, bool entry_point) {
     //     printf("%d -> ", a_func.locals[i]);
     // }
     // printf("None\n");
-    // printf("Code:-\n");
-    // for (int32_t i = 0; i < a_func.code_size; i++) {
-    //     printf("%d -> ", a_func.code[i]);
-    // }
-    // printf("None\n");
+    printf("Code:-\n");
+    for (int32_t i = 0; i < a_func.code_size; i++) {
+        printf("0x%02X -> ", a_func.code[i]);
+    }
+    printf("None\n");
 }

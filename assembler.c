@@ -18,7 +18,7 @@ uint64_t symbol_table_size = 0;
 ValueType *_globals = NULL;
 uint64_t _globals_size = 0;
 
-Function *_functions = NULL;
+AFunction *_functions = NULL;
 uint64_t _func_size = 0;
 
 //Final ByteCode
@@ -32,8 +32,8 @@ uint64_t _co_consts_size = 0;
 uint64_t _entry_point = 0;
 
 
-Extension** extensions = NULL;
-int64_t extensions_size = 0;
+// Extension** extensions = NULL;
+// int64_t extensions_size = 0;
 
 void ExecuteAssembler(FILE* bc_file) {
     char *instr;

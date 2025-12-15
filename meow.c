@@ -17,6 +17,7 @@ int main(int argc, char* argv[]) {
     code = bin_code;
 
     //Virtual Machine
+    printf("Executing VM\n");
     ExecuteVM();
 
     return 0;
