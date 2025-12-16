@@ -124,7 +124,7 @@ uint64_t ipow(uint64_t base, uint64_t exp) {
 
 bool jmp(uint64_t addr) {
     int64_t jmp_addr = ((int64_t) (-(GET_BIT(addr, (operand_size*8)-1)) * ipow(2, 8*operand_size))) + addr;
-    vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (WORD + operand_size)) + (jmp_addr);
+    vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (WORD*5)) + (jmp_addr);
     return false;
 }
 

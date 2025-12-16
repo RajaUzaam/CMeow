@@ -28,6 +28,10 @@ void val_to_table(ValueType** table, uint64_t *table_size, ValueType val) {
     (*table)[(*table_size)-1] = val;
 }
 
+void make_instruction(uint8_t opcode, uint64_t operand, uint64_t* curr_addr){
+
+}
+
 void resolve_func_set(bool entry) {
     uint64_t j = 0;
     uint64_t _curr_addr = 0;
@@ -96,7 +100,7 @@ void resolve_func_set(bool entry) {
                 Value val;
                 make_const(func_instr_set[++i], &val, add_const);
                 uint64_t idx = search_const_table(val);
-                uint64_t ext_needed = make_extension(_func_size-1, _curr_addr, idx);
+                uint64_t ext_needed = make_extension(idx);
                 printf("EXT NEEDED: %lld | %llu\n", val.value.i64, ext_needed);
                 if (ext_needed > 0) {
                     printf("EXT1 IIS NEEDED\n");
@@ -117,8 +121,8 @@ void resolve_func_set(bool entry) {
             case JMP: {
                 add_op_code(&_functions[_func_size-1], JMP);
                 create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, JMP_REF);
-                add_oper_code(&_functions[_func_size-1], -1, 0);
-                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
+                add_oper_code(&_functions[_func_size-1], -1, 3);
+                _curr_addr += 5 * WORD;
                 break;
             }
             case CALL: {
@@ -193,9 +197,9 @@ void make_func(FILE* bc_file, bool entry_point) {
     //     printf("%d -> ", a_func.locals[i]);
     // }
     // printf("None\n");
-    printf("Code:-\n");
-    for (int32_t i = 0; i < a_func.code_size; i++) {
-        printf("0x%02X -> ", a_func.code[i]);
-    }
-    printf("None\n");
+    // printf("Code:-\n");
+    // for (int32_t i = 0; i < a_func.code_size; i++) {
+    //     printf("0x%02X -> ", a_func.code[i]);
+    // }
+    // printf("None\n");
 }

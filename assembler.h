@@ -113,4 +113,4 @@ void create_ref(char *name, uint64_t func_addr, uint64_t addr, RefType type);
 void resolve_refs();
 
 //Variable Length Operands Handler
-uint64_t make_extension(uint64_t func_idx, uint64_t addr, uint64_t val);
+uint64_t make_extension(uint64_t val);

@@ -8,6 +8,7 @@ Instruction fetch_instruction() {
 
     uint8_t opcode = fn->code[frame->ip];
     frame->ip += WORD;
+    operand_size = IsControl(opcode) ? WORD*4 : operand_size;
     uint64_t operand = 0;
 
     if (HasOperand(opcode)) {

@@ -305,7 +305,9 @@ PUSH #295i
 PUSH #296i
 PUSH #297i
 PUSH #298i
+JMP start
 PUSH #299i
+start
 OUT
 STOP
 END

@@ -69,6 +69,7 @@ typedef enum BinDumpOpcodes {
     INDEX
 } BinDumpOpcodes;
 
+#define IsControl(val) (bool)(val == JMP ? true : val == CALL ? true : false)
 #define IsInt(val) (int8_t)((val == CHAR || val == INT32 || val == INT64 || val == BOOL) ? val : 0)
 #define IsReal(val) (int8_t)((val == REAL32 || val == REAL64) ? val-5 : 0)
 #define TypeInt(val) (bool)((val >= BOOL && val <= INT64) ? true : false)
