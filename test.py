@@ -1,4 +1,5 @@
-# generate_consts.py
+# THIS FILE IS NOT AN INTEGRAL PART OF THE CODEBASE AND WILL LIKELY BE REMOVED IN A FUTURE COMMIT
+# This is a test file to generate more than 300 constants to check whether variable length operands are working
 
 N = 300  # >255 to force EXTEND1
 

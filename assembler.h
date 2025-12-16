@@ -6,6 +6,8 @@
 #include "utils.h"
 #include "infer_type.h"
 
+#define BytesNeeded(val) (uint8_t)( val <= UINT8_MAX ? 1 : (val <= UINT16_MAX ? 2 : (val <= UINT32_MAX ? 4 : (val <= UINT64_MAX ? 8 : -1))))
+
 //2 Types of Jump and Function Reference
 typedef enum RefType {
     JMP_REF,
@@ -39,19 +41,6 @@ typedef struct Reference {
     RefType type;
 } Reference;
 
-typedef struct ExtendOper {
-    uint64_t addr;
-    uint8_t type;
-} ExtendOper;
-
-// typedef struct Extension {
-//     uint64_t extensions_size;
-//     ExtendOper* extensions;
-// } Extension;
-
-// extern Extension** extensions;
-// extern int64_t extensions_size;
-
 extern uint8_t *bin_code;
 extern uint64_t bin_code_size;
 
@@ -72,9 +61,6 @@ extern uint64_t _globals_size;
 
 extern AFunction *_functions;
 extern uint64_t _func_size;
-
-//Final ByteCode
-//extern uint8_t *bytecode;
 
 //Constants Table
 extern Value *_co_consts;
@@ -111,6 +97,3 @@ void add_const(Value val);
 void create_unresolved_ref(char *name, uint64_t func_addr, uint64_t addr, RefType type);
 void create_ref(char *name, uint64_t func_addr, uint64_t addr, RefType type);
 void resolve_refs();
-
-//Variable Length Operands Handler
-uint64_t make_extension(uint64_t val);

@@ -28,8 +28,15 @@ void val_to_table(ValueType** table, uint64_t *table_size, ValueType val) {
     (*table)[(*table_size)-1] = val;
 }
 
-void make_instruction(uint8_t opcode, uint64_t operand, uint64_t* curr_addr){
-
+void add_instruction(uint8_t opcode, uint64_t operand, uint64_t* curr_addr){
+    uint64_t ext_needed = BytesNeeded(operand) - WORD;
+    if (ext_needed > 0) {
+        add_op_code(&_functions[_func_size-1], ext_needed+(ESIZE1-1));
+        *curr_addr += WORD;
+    }
+    add_op_code(&_functions[_func_size-1], opcode);
+    add_oper_code(&_functions[_func_size-1], operand, ext_needed);
+    *curr_addr += WORD + WORD + ext_needed;
 }
 
 void resolve_func_set(bool entry) {
@@ -77,16 +84,12 @@ void resolve_func_set(bool entry) {
         if (!entry) {
             switch (opc) {
                 case LOADL: case STOREL: {
-                    add_op_code(&_functions[_func_size-1], opc);
-                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &local_symbol_table, &local_symbol_table_size), 0);
-                    _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
+                    add_instruction(opc, search_table(func_instr_set[++i], &local_symbol_table, &local_symbol_table_size), &_curr_addr);
                     goto next;
                     break;
                 }
                 case LOADA: {
-                    add_op_code(&_functions[_func_size-1], opc);
-                    add_oper_code(&_functions[_func_size-1], search_table(func_instr_set[++i], &arg_symbol_table, &arg_symbol_table_size), 0);
-                    _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
+                    add_instruction(opc, search_table(func_instr_set[++i], &arg_symbol_table, &arg_symbol_table_size), &_curr_addr);
                     goto next;
                     break;
                 }
@@ -100,22 +103,11 @@ void resolve_func_set(bool entry) {
                 Value val;
                 make_const(func_instr_set[++i], &val, add_const);
                 uint64_t idx = search_const_table(val);
-                uint64_t ext_needed = make_extension(idx);
-                printf("EXT NEEDED: %lld | %llu\n", val.value.i64, ext_needed);
-                if (ext_needed > 0) {
-                    printf("EXT1 IIS NEEDED\n");
-                    add_op_code(&_functions[_func_size-1], ext_needed+(ESIZE1-1));
-                    _curr_addr++;
-                }
-                add_op_code(&_functions[_func_size-1], opc);
-                add_oper_code(&_functions[_func_size-1], idx, ext_needed);
-                _curr_addr += OPCODE_SIZE + OPERAND_SIZE + ext_needed;
+                add_instruction(opc, idx, &_curr_addr);
                 break;
             }
             case STOREG: case LOADG: {
-                add_op_code(&_functions[_func_size-1], opc);
-                add_oper_code(&_functions[_func_size-1], search_symbol(func_instr_set[++i]), 0);
-                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
+                add_instruction(opc, search_symbol(func_instr_set[++i]), &_curr_addr);
                 break;
             }
             case JMP: {
@@ -128,8 +120,8 @@ void resolve_func_set(bool entry) {
             case CALL: {
                 add_op_code(&_functions[_func_size-1], CALL);
                 create_unresolved_ref(func_instr_set[++i], _func_size-1, _curr_addr+1, FUNC_REF);
-                add_oper_code(&_functions[_func_size-1], -1, 0);
-                _curr_addr += OPCODE_SIZE + OPERAND_SIZE;
+                add_oper_code(&_functions[_func_size-1], -1, 3);
+                _curr_addr += 5 * WORD;
                 break;
             }
             case (uint8_t)-1: {
@@ -164,11 +156,6 @@ void make_func(FILE* bc_file, bool entry_point) {
     _functions[_func_size - 1].instr_num = 0;
     _functions[_func_size - 1].instructions = NULL;
 
-    // extensions = realloc(extensions, sizeof(Extension) * _func_size);
-    // extensions[_func_size - 1] = malloc(sizeof(Extension));
-    // extensions[_func_size - 1]->extensions = NULL;
-    // extensions[_func_size - 1]->extensions_size = 0;
-
     while ((c = fgetc(bc_file)) && c != EOF && (get_opc(2, instr) != END)) {
         if ((c == ' ' || c == '\n') && instr[0] != '\0' && instr != NULL && instr[0] != ' ') {
             add_to_table(&func_instr_set, &func_instr_set_size, instr);
@@ -183,7 +170,7 @@ void make_func(FILE* bc_file, bool entry_point) {
     local_symbol_table_size = 0;
     arg_symbol_table_size = 0;
     // printf("Making Function, success\nFinal Verdict:-\n");
-    AFunction a_func = _functions[_func_size-1];
+    // AFunction a_func = _functions[_func_size-1];
     // printf("ArgNum: %d\n", a_func.arg_num);
     // printf("LocalNum: %d\n", a_func.local_num);
     // printf("CodeSize: %d\n", a_func.code_size);

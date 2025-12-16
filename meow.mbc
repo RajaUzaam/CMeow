@@ -2,6 +2,7 @@ _consts
 END
 
 _data
+INT64 a_num
 END
 
 _start
@@ -107,6 +108,7 @@ PUSH #97i
 PUSH #98i
 PUSH #99i
 PUSH #100i
+STOREG a_num
 PUSH #101i
 PUSH #102i
 PUSH #103i
@@ -308,6 +310,8 @@ PUSH #298i
 JMP start
 PUSH #299i
 start
+LOADG a_num
+ADD
 OUT
 STOP
 END

@@ -20,6 +20,7 @@ Instruction fetch_instruction() {
         frame->ip += operand_size;
     }
     operand_size = WORD;
+    operand = IsESIZE(opcode) ? (WORD + (opcode - (ESIZE1-1))) : operand;
     new_instruction.opcode = opcode;
     new_instruction.operand = operand;
     return new_instruction;

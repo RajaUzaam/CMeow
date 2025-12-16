@@ -1,13 +1,13 @@
 #include "vm.h"
 
-bool stop() {return true;}
+bool stop(uint64_t operand) {return true;}
 
-bool push(uint64_t addr) {
-    push_val(co_consts[addr]);
+bool push(uint64_t operand) {
+    push_val(co_consts[operand]);
     return false;
 }
 
-bool out() {
+bool out(uint64_t operand) {
     if (vm.sp == -1) {
         printf("Nothing in Stack!");
         exit(1);
@@ -25,62 +25,62 @@ bool out() {
     return false;
 }
 
-bool store(uint64_t addr) {
+bool store(uint64_t operand) {
     Value store_val = pop_val();
-    store_globals(addr, store_val);
+    store_globals(operand, store_val);
     return false;
 }
 
-bool load(uint64_t addr) {
-    Value global = get_globals(addr);
+bool load(uint64_t operand) {
+    Value global = get_globals(operand);
     push_val(global);
     return false;
 }
 
-bool add() {
+bool add(uint64_t operand) {
     Value total;
     perform_operation(&total, OPADD);
     push_val(total);
     return false;
 }
 
-bool sub() {
+bool sub(uint64_t operand) {
     Value total;
     perform_operation(&total, OPSUB);
     push_val(total);
     return false;
 }
 
-bool mul() {
+bool mul(uint64_t operand) {
     Value total;
     perform_operation(&total, OPMUL);
     push_val(total);
     return false;
 }
 
-bool div_() {
+bool div_(uint64_t operand) {
     Value total;
     perform_operation(&total, OPDIV);
     push_val(total);
     return false;
 }
 
-bool leave() {
+bool leave(uint64_t operand) {
     return false;
 }
 
-bool call(uint64_t addr) {
+bool call(uint64_t operand) {
     push_val((Value) {.type=INT32, .value.i32=vm.bp});
     vm.bp = vm.sp;
     vm.fp++;
     vm.call_stack = realloc(vm.call_stack, sizeof(Frame)*(vm.fp+1));
-    vm.call_stack[vm.fp].func_ptr = &vm.functions[addr];
+    vm.call_stack[vm.fp].func_ptr = &vm.functions[operand];
     vm.call_stack[vm.fp].ip = 0;
     vm.call_stack[vm.fp].ret_addr = vm.fp-1;
     return false;
 }
 
-bool ret() {
+bool ret(uint64_t operand) {
     Value return_val = pop_val();
     vm.sp = vm.bp - vm.call_stack[vm.fp].func_ptr->arg_num - 1;
     vm.bp = vm.stack[vm.bp].value.i32;
@@ -89,26 +89,27 @@ bool ret() {
     return false;
 }
 
-bool load_a(uint64_t addr) {
-    push_val(vm.stack[vm.bp - 1 - addr]);
+bool load_a(uint64_t operand) {
+    push_val(vm.stack[vm.bp - 1 - operand]);
     return false;
 }
-bool enter(uint64_t val) {
+bool enter(uint64_t operand) {
+    uint32_t val = co_consts[operand].value.i32;
     for (uint64_t i = 0; i < val; i++) {
         push_val((Value) {.type=INT32, .value.i32=-1});
     }
     return false;
 }
 
-bool load_l(uint64_t addr) {
-    Value to_push = vm.stack[vm.bp + 1 + addr];
+bool load_l(uint64_t operand) {
+    Value to_push = vm.stack[vm.bp + 1 + operand];
     push_val(to_push);
     return false;
 }
 
-bool store_l(uint64_t addr) {
+bool store_l(uint64_t operand) {
     Value to_store = pop_val();
-    vm.stack[vm.bp + 1 + addr] = to_store;
+    vm.stack[vm.bp + 1 + operand] = to_store;
     return false;
 }
 
@@ -122,13 +123,13 @@ uint64_t ipow(uint64_t base, uint64_t exp) {
     return result;
 }
 
-bool jmp(uint64_t addr) {
-    int64_t jmp_addr = ((int64_t) (-(GET_BIT(addr, (operand_size*8)-1)) * ipow(2, 8*operand_size))) + addr;
+bool jmp(uint64_t operand) {
+    int64_t jmp_addr = ((int64_t) (-(GET_BIT(operand, (operand_size*32)-1)) * ipow(2, 8*operand_size))) + operand;
     vm.call_stack[vm.fp].ip = (vm.call_stack[vm.fp].ip - (WORD*5)) + (jmp_addr);
     return false;
 }
 
-bool e_size(uint64_t val) {
-    operand_size = (uint8_t) WORD + (val - (ESIZE1-1));
+bool e_size(uint64_t operand) {
+    operand_size = operand;
     return false;
 }

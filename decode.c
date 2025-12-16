@@ -1,31 +1,30 @@
 #include "vm.h"
 
+bool (*exe_funcs[])(uint64_t) = {
+    push, 
+    store, 
+    load, 
+    jmp, 
+    call, 
+    enter, 
+    load_a, 
+    load_l, 
+    store_l, 
+    stop, 
+    e_size, e_size, e_size, e_size, e_size, e_size, e_size, 
+    out, 
+    add, 
+    sub, 
+    mul, 
+    div_, 
+    leave, 
+    ret
+};
+
 bool decode_execute(Instruction instruction) {
-    switch (instruction.opcode) {
-        case STOP: {return stop();}
-        case PUSH: {return push(instruction.operand);}
-        case OUT: {return out();}
-        case STOREG: {return store(instruction.operand);}
-        case LOADG: {return load(instruction.operand);}
-        case ADD: {return add();}
-        case SUB: {return sub();}
-        case MUL: {return mul();}
-        case DIV: {return div_();}
-        case JMP: {return jmp(instruction.operand);}
-        case CALL: {return call(instruction.operand);}
-        case RET: {return ret();}
-        case ENTER: {return enter(co_consts[instruction.operand].value.i32);}
-        case LOADA: {return load_a(instruction.operand);}
-        case LOADL: {return load_l(instruction.operand);}
-        case STOREL: {return store_l(instruction.operand);}
-        case LEAVE: {return leave();}
-        //case ESIZE: {return e_size(instruction.operand);}
-        default: {
-            if (IsESIZE(instruction.opcode)) {
-                return e_size(instruction.opcode);
-            }
-            printf("Unknown Instruction\n");
-            return 0;
-        }
+    if (IsOpcode(instruction.opcode)) {
+        return exe_funcs[instruction.opcode](instruction.operand);
+    } else {
+        printf("Unknown Instruction!\n"); exit(1);
     }
 }

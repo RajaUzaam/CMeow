@@ -6,7 +6,6 @@
 #include "instruction_set.h"
 #include "utils.h"
 #include "infer_type.h"
-//#include "operations.h"
 
 typedef struct Function {
     uint64_t idx;
@@ -54,7 +53,6 @@ extern uint8_t *code;
 extern Value *co_consts;
 extern uint64_t co_consts_size;
 
-//extern uint8_t EOSB;
 extern uint8_t operand_size;
 
 #endif
@@ -80,21 +78,21 @@ bool decode_execute(Instruction Instruction);
 void perform_operation(Value *total, BinaryOps oper);
 
 // Instructions
-bool stop();
-bool push(uint64_t addr);
-bool out();
-bool store(uint64_t addr);
-bool load(uint64_t addr);
-bool add();
-bool sub();
-bool mul();
-bool div_(); //div() is a c lib ig
-bool jmp(uint64_t addr);
-bool call(uint64_t addr);
-bool ret();
-bool load_a(uint64_t addr);
-bool enter(uint64_t val);
-bool load_l(uint64_t addr);
-bool store_l(uint64_t addr);
-bool leave();
-bool e_size(uint64_t val);
+bool stop   (uint64_t operand);
+bool push   (uint64_t operand);
+bool out    (uint64_t operand);
+bool store  (uint64_t operand);
+bool load   (uint64_t operand);
+bool add    (uint64_t operand);
+bool sub    (uint64_t operand);
+bool mul    (uint64_t operand);
+bool div_   (uint64_t operand); //div() is a c lib ig
+bool jmp    (uint64_t operand);
+bool call   (uint64_t operand);
+bool ret    (uint64_t operand);
+bool load_a (uint64_t operand);
+bool enter  (uint64_t operand);
+bool load_l (uint64_t operand);
+bool store_l(uint64_t operand);
+bool leave  (uint64_t operand);
+bool e_size (uint64_t operand);

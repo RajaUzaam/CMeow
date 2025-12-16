@@ -21,19 +21,12 @@ uint64_t _globals_size = 0;
 AFunction *_functions = NULL;
 uint64_t _func_size = 0;
 
-//Final ByteCode
-//uint8_t *bytecode = NULL;
-
 //Constants Table
 Value *_co_consts = NULL;
 uint64_t _co_consts_size = 0;
 
 //Entry point variable
 uint64_t _entry_point = 0;
-
-
-// Extension** extensions = NULL;
-// int64_t extensions_size = 0;
 
 void ExecuteAssembler(FILE* bc_file) {
     char *instr;

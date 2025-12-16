@@ -12,7 +12,6 @@ uint64_t co_consts_size = 0;
 
 uint8_t *code = NULL;
 
-//uint8_t EOSB = 0;
 uint8_t operand_size = WORD;
 
 void InitializeVM() {
