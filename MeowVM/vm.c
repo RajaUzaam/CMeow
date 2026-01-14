@@ -21,7 +21,6 @@ void InitializeVM() {
 }
 
 int ExecuteVM() {
-    ConstructBin();
     InitializeVM();
     Instruction instruction = fetch_instruction();
     bool exit = decode_execute(instruction);
