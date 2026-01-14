@@ -1,6 +1,7 @@
-#include "vm.h"
-#include "assembler.h"
+#include "header.h"
 #include "instruction_set.h"
+#include "MeowVM/vm.h"
+#include "MeowASM/assembler.h"
 
 int main(int argc, char* argv[]) {
     

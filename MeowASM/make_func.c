@@ -1,4 +1,5 @@
 #include "assembler.h"
+#include "../instruction_set.h"
 
 char** func_instr_set = NULL;
 uint64_t func_instr_set_size = 0;

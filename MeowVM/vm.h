@@ -2,10 +2,10 @@
 #define VM_H
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "header.h"
-#include "instruction_set.h"
-#include "utils.h"
-#include "infer_type.h"
+#include "../header.h"
+#include "../instruction_set.h"
+//#include "utils.h"
+#include "type_handler.h"
 
 typedef struct Function {
     uint64_t idx;

@@ -1,4 +1,5 @@
 #include "assembler.h"
+#include "../instruction_set.h"
 
 Value *const_set = NULL;
 uint64_t const_set_size = 0;

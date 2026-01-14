@@ -1,4 +1,5 @@
 #include "assembler.h"
+#include "../instruction_set.h"
 
 char** symbol_intr_set = NULL;
 uint64_t symbol_intr_set_size = 0;

@@ -1,8 +1,8 @@
 #ifndef BC_L
 #define BC_L
 
-#include "header.h"
-#include "instruction_set.h"
+#include "../header.h"
+#include "../instruction_set.h"
 #include "utils.h"
 #include "infer_type.h"
 

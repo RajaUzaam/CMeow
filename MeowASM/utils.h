@@ -1,8 +1,8 @@
 #ifndef UTILS
 #define UTILS
 
-#include "header.h"
-#include "instruction_set.h"
+#include "../header.h"
+#include "../instruction_set.h"
 
 char* trim(char* str);
 void make_instr(uint64_t *len, char **instr, char c);

@@ -1,7 +1,7 @@
 #ifndef INSTR_SET
 #define INSTR_SET
 
-#include "header.h"
+#include "./header.h"
 
 #define OPCODES_NUM RET+1
 #define LOADER_OPCODES_NUM END-ARGS+1

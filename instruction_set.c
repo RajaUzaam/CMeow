@@ -1,4 +1,4 @@
-#include "instruction_set.h"
+#include "./instruction_set.h"
 
 const char op_str[OPCODES_NUM][STD_OPCODE_LEN] = {
     //Has Operands
