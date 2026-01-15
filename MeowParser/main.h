@@ -6,5 +6,6 @@
 #include "scanner.h"
 #include "token.h"
 #include "parser.h"
+#include "tree_walker.h"
 
 #endif

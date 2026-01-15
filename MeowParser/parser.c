@@ -1,6 +1,8 @@
 #include "parser.h"
 
 static Expr* expression();
+Expr* declaration();
+Expr* statement();
 
 static Token* tokens;
 static uint64_t curr = 0;
@@ -114,9 +116,17 @@ Expr* expression() {
     return equality();
 }
 
-Expr Parser(Token** toks) {
+Expr* declaration() {
+
+}
+
+Expr* statement() {
+
+}
+
+Expr* Parser(Token** toks) {
     tokens = *toks;
     curr = 0;
     Expr* expr = expression();
-    return *expr;
+    return expr;
 }

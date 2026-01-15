@@ -12,8 +12,10 @@ int main(int argc, char* argv[]) {
     Token* tokens;
     uint64_t tokens_num;
     Scanner(argv[1], &tokens, &tokens_num);
-    Expr tree = Parser(&tokens);
-    PrintAST(&tree);
+    Expr* tree = Parser(&tokens);
+    PrintAST(tree);
+    putchar('\n');
+    Walker(tree);
 
     if (err_status) {
         exit(1);

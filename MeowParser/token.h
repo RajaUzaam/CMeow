@@ -29,7 +29,7 @@ typedef enum {
 } TokenType;
 
 typedef struct {
-    enum {I, R, S, B, C} type;
+    enum {I, R, S, B, C, N} type;
     union {
         int64_t i;
         double r;

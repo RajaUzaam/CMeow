@@ -14,16 +14,6 @@ typedef enum {
     UNARY
 } ExprType;
 
-// struct Expr {
-//     ExprType type;
-//     union {
-//         struct {Token type; Expr* left; Expr* right;} Binary;
-//         struct {Expr* expression;} Grouping;
-//         struct {Object* value;} Literal;
-//         struct {Token type; Expr* right;} Unary;
-//     };
-// };
-
 typedef struct {
     Token type;
     Expr* left;

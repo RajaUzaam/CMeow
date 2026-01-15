@@ -7,4 +7,4 @@
 
 #endif
 
-Expr Parser(Token** toks);
+Expr* Parser(Token** toks);
