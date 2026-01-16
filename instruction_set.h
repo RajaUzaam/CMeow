@@ -88,18 +88,16 @@ typedef enum ValueType {
     CHAR,
 
     INT32,
-    INT64,
-
     REAL32,
+
+    INT64,
     REAL64,
+
+    PTR,
 
     NONE,
 
     //Dynamic
-    PTR,
-    FUNC,
-    ARR,
-    STR,
     OBJ
 } ValueType;
 
@@ -122,6 +120,7 @@ typedef enum LoaderOpcodes {
 
 typedef struct Value {
     bool dynamic;
+    bool constant;
     ValueType type;
     union {
         uint8_t bl;

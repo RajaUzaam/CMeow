@@ -7,4 +7,4 @@
 
 #endif
 
-Expr* Parser(Token** toks);
+void Parser(Token** toks, Stmt*** statements, uint32_t* stmts_num);

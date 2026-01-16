@@ -10,4 +10,4 @@
 
 #endif
 
-void Walker(Expr* tree);
+void Walker(Stmt*** tree, uint32_t num);

@@ -20,8 +20,7 @@ void InitializeVM() {
     vm.sp = -1;
 }
 
-int ExecuteVM() {
-    InitializeVM();
+int ExecuteVM(bool debug_mode, bool repl_mode) {
     Instruction instruction = fetch_instruction();
     bool exit = decode_execute(instruction);
     while (!exit) {

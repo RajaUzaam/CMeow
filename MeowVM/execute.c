@@ -38,8 +38,20 @@ bool load(uint64_t operand) {
 }
 
 bool add(uint64_t operand) {
-    Value total;
-    perform_operation(&total, OPADD);
+    Value lhs, rhs, total;
+    rhs = pop_val();
+    lhs = pop_val();
+    total.type = resolve_type(&lhs, &rhs);
+    switch (total.type) {
+        case INT32: total.value.i32 = lhs.value.i32 + rhs.value.i32; break;
+        case INT64: total.value.i64 = lhs.value.i64 + rhs.value.i64; break;
+        case REAL32: total.value.r32 = lhs.value.r32 + rhs.value.r32; break;
+        case REAL64: total.value.r64 = lhs.value.r64 + rhs.value.r64; break;
+        case CHAR: total.value.chr = lhs.value.chr + rhs.value.chr; break;
+        case BOOL: total.value.bl = lhs.value.bl || rhs.value.bl; break;
+        default: return false;
+    }
+    //perform_operation(&total, OPADD);
     push_val(total);
     return false;
 }
@@ -133,3 +145,19 @@ bool e_size(uint64_t operand) {
     operand_size = operand;
     return false;
 }
+
+// #define feq(lhs, rhs) (bool)(lhs == rhs)
+// #define fgt(lhs, rhs) (bool)(lhs > rhs)
+// #define flt(lhs, rhs) (bool)(lhs < rhs)
+// #define fgte(lhs, rhs) (bool)(lhs >= rhs)
+// #define flte(lhs, rhs) (bool)(lhs <= rhs)
+// #define fne(lhs, rhs) (bool)(lhs != rhs)
+
+
+// // [1, 2, 3]
+// bool eq(uint64_t operand) {
+//     Value rhs = pop_val();
+//     Value lhs = pop_val();
+//     //promote()
+//     return false;
+// }

@@ -2,7 +2,7 @@
 
 static Expr* expression();
 Expr* declaration();
-Expr* statement();
+Stmt* statement();
 
 static Token* tokens;
 static uint64_t curr = 0;
@@ -46,6 +46,12 @@ Token consume(TokenType type, char* message) {
 
 static Expr* alloc_expr(Expr e) {
     Expr* p = malloc(sizeof(Expr));
+    *p = e;
+    return p;
+}
+
+static Stmt* alloc_stmt(Stmt e) {
+    Stmt* p = malloc(sizeof(Stmt));
     *p = e;
     return p;
 }
@@ -120,13 +126,40 @@ Expr* declaration() {
 
 }
 
-Expr* statement() {
-
+Stmt* print_statement() {
+    Expr* value = expression();
+    consume(NEWLINE, "Expected a new line at the end");
+    return alloc_stmt((Stmt) {.type=PRINT, .out_stmt=value});
 }
 
-Expr* Parser(Token** toks) {
+Stmt* expression_statement() {
+    Expr* value = expression();
+    consume(NEWLINE, "Expected a new line at the end");
+    return alloc_stmt((Stmt) {.type=EXPR, .out_stmt=value});
+}
+
+Stmt* statement() {
+    if (match((TokenType[]) {OUTPUT}, 1)) {
+        return print_statement();
+    }
+    return expression_statement();
+}
+
+void add_statement(Stmt*** stmts, uint32_t* stmt_num, Stmt* add_stmt) {
+    *stmts = realloc(*stmts, sizeof(Stmt) * (*stmt_num + 1));
+    (*stmts)[*stmt_num] = add_stmt;
+    (*stmt_num)++;
+}
+
+//Stmt** statements = NULL;
+
+void Parser(Token** toks, Stmt*** statements, uint32_t* stmts_num) {
     tokens = *toks;
     curr = 0;
-    Expr* expr = expression();
-    return expr;
+    *stmts_num = 0;
+
+    while (!isAtEnd()) {
+        add_statement(statements, stmts_num, statement());
+    }
+    return;
 }

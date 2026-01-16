@@ -12,10 +12,12 @@ int main(int argc, char* argv[]) {
     Token* tokens;
     uint64_t tokens_num;
     Scanner(argv[1], &tokens, &tokens_num);
-    Expr* tree = Parser(&tokens);
-    PrintAST(tree);
-    putchar('\n');
-    Walker(tree);
+    
+    uint32_t stmts_num = 0;
+    Stmt** tree = NULL;
+    Parser(&tokens, &tree, &stmts_num);
+    
+    Walker(&tree, stmts_num);
 
     if (err_status) {
         exit(1);

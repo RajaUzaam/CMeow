@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     }
 
     //Assembler
-    // -s, -o, -a, -r, -w
+    // -s, -o, -a, -r, -w, -d
     if (argc > 1) {
         FILE* bc_file = fopen(argv[2], "r");
         if (!strcmp(argv[1], "-s")) {
@@ -32,13 +32,15 @@ int main(int argc, char* argv[]) {
         } else {
             printf("\nUnknown Tag Provided\n"); exit(1);
         }
+        if (argc > 3 && !strcmp(argv[argc-1], "-d")) {
+            printf("Debugger is on baby!");
+        }
         fclose(bc_file);
     }
 
-    //Bin Loader
-
     //Virtual Machine
-    ExecuteVM();
+    InitializeVM();
+    ExecuteVM(false, false);
 
     return 0;
 }

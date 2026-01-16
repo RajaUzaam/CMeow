@@ -112,12 +112,25 @@ Object evaluate(Expr* expr) {
     return (Object) {.type=N};
 }
 
-void Walker(Expr* tree) {
-    Object final_value = evaluate(tree);
+void visit_expression(Expr* expr) {
+    evaluate(expr);
+}
+
+void visit_print(Expr* expr) {
+    Object final_value = evaluate(expr);
     switch (final_value.type) {
         case R: printf("Output: %02f\n", final_value.value.r); return;
         case B: printf("Output: %s\n", final_value.value.b ? "TRUE" : "FALSE"); return;
         case S: printf("Ouput: %s\n", final_value.value.s); return;
         default: return;
+    }
+}
+
+void Walker(Stmt*** tree, uint32_t num) {
+    for (uint32_t i = 0; i < num; i++) {
+        switch ((*tree)[i]->type) {
+            case EXPR: visit_expression((*tree)[i]->expr); break;
+            case PRINT: visit_print((*tree)[i]->out_stmt); break;
+        }
     }
 }

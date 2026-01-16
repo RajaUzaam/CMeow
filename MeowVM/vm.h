@@ -60,7 +60,8 @@ extern uint8_t operand_size;
 void ConstructBin();
 
 //Virual Machine
-int ExecuteVM();
+void InitializeVM();
+int ExecuteVM(bool debug_mode, bool repl_mode);
 
 //Stack Funcs
 void push_val(Value val);

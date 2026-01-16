@@ -6,6 +6,7 @@
 #include "error.h"
 
 typedef struct Expr Expr;
+typedef struct Stmt Stmt;
 
 typedef enum {
     BINARY,
@@ -36,6 +37,19 @@ struct Expr {
         Grouping group;
         Object literal;
         Unary unary;
+    };
+};
+
+typedef enum StmtType {
+    EXPR,
+    PRINT 
+} StmtType;
+
+struct Stmt {
+    StmtType type;
+    union {
+        Expr* expr;
+        Expr* out_stmt;
     };
 };
 
