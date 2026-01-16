@@ -49,17 +49,12 @@ const char type_op_str[1+TYPE_NUM][STD_OPCODE_LEN] = {
     "BOOL",
     "CHAR",
     "INT32",
-    "INT64",
     "REAL32",
+    "INT64",
     "REAL64",
     "NONE",
 
     //Dynamic
-    //"DYNAMIC",
-    "PTR",
-    "FUNC",
-    "ARR",
-    "STR",
     "OBJ"
 };
 

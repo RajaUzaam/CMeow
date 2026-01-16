@@ -50,7 +50,7 @@ typedef struct {
 static Keyword* keywords = NULL;
 
 static void InitializeKeyWordHash() {
-    for (int i = STRING; i <= NONE; i++) {
+    for (int i = STRING; i <= NUL; i++) {
         Keyword* keyword = malloc(sizeof(Keyword));
         keyword->keyword = i;
         strcpy(keyword->key_name, TokenTypeString[i]);
@@ -64,8 +64,8 @@ static void add_identifier() {
     Keyword* kw;
     HASH_FIND_STR(keywords, substr, kw);
     if (kw == NULL) {
-        if (!strcmp(substr, "TRUE")) {AddToken((Token) {.type=BOOL, .literal={.type=B, .value=true}, .line=line});}
-        else if (!strcmp(substr, "FALSE")) {AddToken((Token) {.type=BOOL, .literal={.type=B, .value=false}, .line=line});}
+        if (!strcmp(substr, "TRUE")) {AddToken((Token) {.type=BL, .literal={.type=BOOL, .value.bl=true}, .line=line});}
+        else if (!strcmp(substr, "FALSE")) {AddToken((Token) {.type=BL, .literal={.type=BOOL, .value.bl=false}, .line=line});}
         else {AddToken((Token) {.type=IDENTIFIER, .lexeme=substr, .line=line});}
     } else {
         AddToken((Token) {.type=kw->keyword, .line=line});
@@ -106,7 +106,7 @@ static void ScanToken() {
             next();
             if (is_str(&src_code, &current, src_len, FileEnd, peek, &line)) {
                 char* substr = sub_str(&src_code, start+1, current-start-2, src_len);
-                AddToken((Token) {.type=STRING, .line=line, .literal.value.s = substr, .literal.type=S});
+                AddToken((Token) {.type=STRING, .line=line, .literal.value.obj.str_obj.str = substr, .literal.type=OBJ});
             } else {
                 SimpleError(&error_status, "Unterminated String!", line);
             }
@@ -120,7 +120,7 @@ static void ScanToken() {
         default:
             if (isdigit(c) && is_int(&src_code, &current, FileEnd, peek, &line)) {
                 char* substr = sub_str(&src_code, start, current-start+1, src_len);
-                AddToken((Token) {.type=INTEGER, .literal.type=I, .literal.value.i=_atoi64(substr), .line=line});
+                AddToken((Token) {.type=INTEGER, .literal.type=INT32, .literal.value.i32=_atoi64(substr), .line=line});
             } else if (isalpha(c) || c == '_') {
                 add_identifier();
             } else {

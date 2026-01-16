@@ -1,71 +1,71 @@
 #include "tree_walker.h"
 
-Object evaluate(Expr* expr);
+Value evaluate(Expr* expr);
 
-void to_double(Object* val) {
+void to_double(Value* val) {
     switch(val->type) {
-        case I: val->value.r = (double)val->value.i; break;
-        case R: return;
-        case B: val->value.r = (double)val->value.b; break;
-        case C: val->value.r = (double)val->value.c; break;
+        case INT32: val->value.r64 = (double)val->value.i32; break;
+        case REAL32: return;
+        case BOOL: val->value.r64 = (double)val->value.bl; break;
+        case CHAR: val->value.r64 = (double)val->value.chr; break;
         default: printf("Invalid Castin!\n"); exit(1);
         //case S: val->value.r = (double)val->value.i;
     }
-    val->type = R;
+    val->type = REAL64;
 }
 
-double get_double(Object val) {
+double get_double(Value val) {
     switch(val.type) {
-        case I: return (double)val.value.i;
-        case R: return val.value.r;
-        case B: return (double)val.value.b;
-        case C: return (double)val.value.c;
+        case INT32: return (double)val.value.i32;
+        case REAL64: return val.value.r64;
+        case BOOL: return (double)val.value.bl;
+        case CHAR: return (double)val.value.chr;
         default: printf("Invalid Castin!\n"); exit(1);
         //case S: val->value.r = (double)val->value.i;
     }
 }
 
-Object make_obj(double value) {
-    return ((Object) {.type=R, .value.r=value});
+Value make_obj(double value) {
+    return ((Value) {.type=REAL64, .value.r64=value});
 }
 
-Object isEqual(Object left, Object right) {
-    if (left.type==N && right.type==N) return (Object) {.type=B, .value.b=true};
-    if (left.type==N || right.type==N) return (Object) {.type=B, .value.b=false};
-    return (Object) {.type=B, .value.b=(get_double(left) == get_double(right))};
+Value isEqual(Value left, Value right) {
+    if (left.type==NONE && right.type==NONE) return (Value) {.type=BOOL, .value.bl=true};
+    if (left.type==NONE || right.type==NONE) return (Value) {.type=BOOL, .value.bl=false};
+    return (Value) {.type=BOOL, .value.bl=(get_double(left) == get_double(right))};
 }
 
-bool isTruthy(Object val) {
-    if (val.type == N) return false;
-    if (val.type == B) return val.value.b;
+bool isTruthy(Value val) {
+    if (val.type == NONE) return false;
+    if (val.type == BOOL) return val.value.bl;
     return true;
 }
 
-Object visit_unary(Unary expr) {
-    Object right = evaluate(expr.right);
+Value visit_unary(Unary expr) {
+    Value right = evaluate(expr.right);
     switch (expr.type.type) {
         case BANG:
-            return (Object){.type=B, .value.b=isTruthy(right)};
+            return (Value){.type=BOOL, .value.bl=isTruthy(right)};
         case MINUS: 
             to_double(&right);
-            right.value.r = -right.value.r;
+            right.value.r64 = -right.value.r64;
             return right;
         default: break;
     }
-    return (Object) {.type=N};
+    return (Value) {.type=NONE};
 }
 
-Object visit_literal(Object expr) {
+Value visit_literal(Value expr) {
     return expr;
 }
 
-Object visit_grouping(Grouping expr) {
+Value visit_grouping(Grouping expr) {
     return evaluate(expr.expression);
 }
 
-Object visit_binary(Binary expr) {
-    Object left = evaluate(expr.left);
-    Object right = evaluate(expr.right);
+Value visit_binary(Binary expr) {
+    Value left = evaluate(expr.left);
+    Value right = evaluate(expr.right);
 
     switch (expr.type.type) {
         case MINUS:
@@ -75,10 +75,10 @@ Object visit_binary(Binary expr) {
         case STAR:
             return make_obj(get_double(left) * get_double(right));
         case PLUS:
-            if (left.type == S && right.type == S) {
+            if ((left.type == OBJ && left.value.obj.type == STR) && (right.type == OBJ && right.value.obj.type == STR)) {
                 char str[512];
-                sprintf(str, "%s%s", left.value.s, right.value.s);
-                return ((Object) {.type=S, .value.s=str});
+                sprintf(str, "%s%s", left.value.obj.str_obj.str, right.value.obj.str_obj.str);
+                return ((Value) {.type=OBJ, .value.obj.str_obj.str=str, .value.obj.type=STR});
             } else {
                 return make_obj(get_double(left) + get_double(right));
             }
@@ -91,25 +91,25 @@ Object visit_binary(Binary expr) {
         case LESS_EQUAL:
             return make_obj(get_double(left) <= get_double(right));
         case BANG_EQUAL:
-            return ((Object){.type=B, .value.b=!isEqual(left, right).value.b});
+            return ((Value){.type=BOOL, .value.bl=!isEqual(left, right).value.bl});
         case EQUAL:
             return isEqual(left, right);
         default:
             printf("Unknown in binary!!!"); exit(1);
     }
 
-    return (Object) {.type=N};
+    return (Value) {.type=NONE};
 }
 
-Object evaluate(Expr* expr) {
+Value evaluate(Expr* expr) {
     switch (expr->type) {
         case GROUPING: return visit_grouping(expr->group);
         case BINARY: return visit_binary(expr->binary);
         case LITERAL: return visit_literal(expr->literal);
         case UNARY: return visit_unary(expr->unary);
-        default: return (Object) {.type=N};
+        default: return (Value) {.type=NONE};
     }
-    return (Object) {.type=N};
+    return (Value) {.type=NONE};
 }
 
 void visit_expression(Expr* expr) {
@@ -117,11 +117,11 @@ void visit_expression(Expr* expr) {
 }
 
 void visit_print(Expr* expr) {
-    Object final_value = evaluate(expr);
+    Value final_value = evaluate(expr);
     switch (final_value.type) {
-        case R: printf("Output: %02f\n", final_value.value.r); return;
-        case B: printf("Output: %s\n", final_value.value.b ? "TRUE" : "FALSE"); return;
-        case S: printf("Ouput: %s\n", final_value.value.s); return;
+        case REAL64: printf("Output: %02f\n", final_value.value.r64); return;
+        case BOOL: printf("Output: %s\n", final_value.value.bl ? "TRUE" : "FALSE"); return;
+        case OBJ: if (final_value.value.obj.type == STR) {printf("Ouput: %s\n", final_value.value.obj.str_obj.str);}; return;
         default: return;
     }
 }

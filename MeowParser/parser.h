@@ -3,6 +3,7 @@
 
 #include "header.h"
 #include "token.h"
+#include "../MeowObjs/objects.h"
 #include "ast.h"
 
 #endif

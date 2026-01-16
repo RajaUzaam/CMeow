@@ -3,6 +3,7 @@
 
 #include "header.h"
 #include "token.h"
+#include "../MeowObjs/objects.h"
 #include "error.h"
 
 typedef struct Expr Expr;
@@ -35,7 +36,7 @@ struct Expr {
     union {
         Binary binary;
         Grouping group;
-        Object literal;
+        Value literal;
         Unary unary;
     };
 };

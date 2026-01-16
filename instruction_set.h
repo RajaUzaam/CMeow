@@ -2,6 +2,7 @@
 #define INSTR_SET
 
 #include "./header.h"
+#include "./MeowObjs/objects.h"
 
 #define OPCODES_NUM RET+1
 #define LOADER_OPCODES_NUM END-ARGS+1
@@ -82,25 +83,6 @@ typedef enum BinDumpOpcodes {
 #define IsR64(val)      (bool)(val == REAL64 ? true : false)
 #define GetBytes(val) (val == BOOL ? 1 : (val == CHAR ? 1 : (val == INT32 ? 4 : (val == INT64 ? 8 : (val == REAL32 ? 4 : (val == REAL64 ? 8 : -1))))))
 
-typedef enum ValueType {
-    //Primitives
-    BOOL=1,
-    CHAR,
-
-    INT32,
-    REAL32,
-
-    INT64,
-    REAL64,
-
-    PTR,
-
-    NONE,
-
-    //Dynamic
-    OBJ
-} ValueType;
-
 typedef enum BinaryOps {
     OPADD,
     OPSUB,
@@ -117,24 +99,6 @@ typedef enum LoaderOpcodes {
     START,
     END
 } LoaderOpcodes;
-
-typedef struct Value {
-    bool dynamic;
-    bool constant;
-    ValueType type;
-    union {
-        uint8_t bl;
-        uint8_t chr;
-
-        int32_t i32;
-        int64_t i64;
-
-        float   r32;
-        double  r64;
-
-        void    *ptr;
-    } value;
-} Value;
 
 extern const char op_str[OPCODES_NUM][STD_OPCODE_LEN];
 extern const char loader_op_str[LOADER_OPCODES_NUM][STD_OPCODE_LEN];

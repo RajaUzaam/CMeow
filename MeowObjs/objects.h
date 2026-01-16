@@ -18,4 +18,43 @@ typedef struct Object {
     };
 } Object;
 
+typedef enum ValueType {
+    //Primitives
+    BOOL=1,
+    CHAR,
+
+    INT32,
+    REAL32,
+
+    INT64,
+    REAL64,
+
+    PTR,
+
+    NONE,
+
+    //Dynamic
+    OBJ
+} ValueType;
+
+typedef struct Value {
+    bool dynamic;
+    bool constant;
+    ValueType type;
+    union {
+        uint8_t bl;
+        uint8_t chr;
+
+        int32_t i32;
+        int64_t i64;
+
+        float   r32;
+        double  r64;
+
+        void    *ptr;
+
+        Object obj;
+    } value;
+} Value;
+
 #endif

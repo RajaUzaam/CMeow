@@ -13,30 +13,30 @@ const char* TokenTypeString[] = {
     "LESS", "LESS_EQUAL",
 
     // Literals.
-    "IDENTIFIER", "STRING", "INTEGER", "REAL", "CHARACTER", "BOOL", "CONSTANT",
+    "IDENTIFIER", "STRING", "INTEGER", "REAL", "CHARACTER", "BL", "CONSTANT",
 
     // Keywords.
     "DECLARE", "THEN", "AND", "CLASS", "ELSE", "FUNCTION", "ENDFUNCTION", "PROCEDURE",
     "ENDPROCEDURE", "TO", "OF", "NEXT", "UNTIL", "CALL",
     "FOR", "IF", "ENDIF", "OR", "NOT", "SWITCH", "CASE", "OTHERWISE", "REPEAT", "DO",
     "OUTPUT", "INPUT", "RETURN", "SUPER", "THIS", "VAR", "WHILE", "ENDWHILE", 
-    "BREAK", "ENDSWITCH", "RETURNS", "NONE"
+    "BREAK", "ENDSWITCH", "RETURNS", "NUL"
 };
 
-void ObjString(Object obj, char buffer[][256]) {
+void ObjString(Value obj, char buffer[][256]) {
     //char buffer[256];
     switch (obj.type) {
-        case I: sprintf(*buffer, "%lli", obj.value.i); break;
-        case R: sprintf(*buffer, "%f", obj.value.r); break;
-        case S: sprintf(*buffer, "%s", obj.value.s); break;
-        case B: sprintf(*buffer, "%i", obj.value.b); break;
-        case C: sprintf(*buffer, "%c", obj.value.c); break;
+        case INT32: sprintf(*buffer, "%lli", obj.value.i32); break;
+        case REAL32: sprintf(*buffer, "%f", obj.value.r32); break;
+        case OBJ: if (obj.type == STR) {sprintf(*buffer, "%s", obj.value.obj.str_obj.str);}; break;
+        case BOOL: sprintf(*buffer, "%i", obj.value.bl); break;
+        case CHAR: sprintf(*buffer, "%c", obj.value.chr); break;
         default: return;
     }
     //return buffer;
 }
 
-void MakeToken(Token* token, TokenType type, char* lexeme, Object literal, uint64_t line) {
+void MakeToken(Token* token, TokenType type, char* lexeme, Value literal, uint64_t line) {
     token->type = type;
     token->lexeme = lexeme;
     token->literal = literal;
