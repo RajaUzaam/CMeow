@@ -29,8 +29,10 @@ typedef enum Opcodes {
     PUSH,
     STOREG,
     LOADG,
+
     JMP,
     CALL,
+    
     ENTER,
 
     //Function Specific

@@ -81,6 +81,15 @@ bool leave(uint64_t operand) {
     return false;
 }
 
+bool enter(uint64_t operand) {
+    uint32_t val = co_consts[operand].value.i32;
+    for (uint64_t i = 0; i < val; i++) {
+        push_val((Value) {.type=INT32, .value.i32=-1});
+    }
+    return false;
+}
+
+
 bool call(uint64_t operand) {
     push_val((Value) {.type=INT32, .value.i32=vm.bp});
     vm.bp = vm.sp;
@@ -90,6 +99,7 @@ bool call(uint64_t operand) {
     vm.call_stack[vm.fp].ip = 0;
     vm.call_stack[vm.fp].ret_addr = vm.fp-1;
     return false;
+    // return enter(vm.call_stack[vm.fp].func_ptr->locals_num);
 }
 
 bool ret(uint64_t operand) {
@@ -103,13 +113,6 @@ bool ret(uint64_t operand) {
 
 bool load_a(uint64_t operand) {
     push_val(vm.stack[vm.bp - 1 - operand]);
-    return false;
-}
-bool enter(uint64_t operand) {
-    uint32_t val = co_consts[operand].value.i32;
-    for (uint64_t i = 0; i < val; i++) {
-        push_val((Value) {.type=INT32, .value.i32=-1});
-    }
     return false;
 }
 

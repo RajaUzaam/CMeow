@@ -4,7 +4,6 @@
 
 #include "../header.h"
 #include "../instruction_set.h"
-//#include "utils.h"
 #include "type_handler.h"
 
 typedef struct Function {
