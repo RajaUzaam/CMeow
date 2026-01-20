@@ -307,11 +307,12 @@ PUSH #295i
 PUSH #296i
 PUSH #297i
 PUSH #298i
-JMP start
 PUSH #299i
 start
 LOADG a_num
+LOADG a_num
 ADD
 OUT
+JMP start
 STOP
 END

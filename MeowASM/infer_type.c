@@ -169,22 +169,22 @@ bool make_value(char* literal, Value* val, bool dynamic, int8_t type) {
         if (TypeInt(known_type) && TypeInt(type)) {
             switch(type) {
                 case BOOL:
-                    if (rep.suffixed) {(*val).value.bl = (uint8_t) atoi(rep.data);}
-                    else {(*val).value.bl = (uint8_t) !strcmp(rep.data, "TRUE") ? 1 : 0;}
+                    if (rep.suffixed) {(*val).bl = (uint8_t) atoi(rep.data);}
+                    else {(*val).bl = (uint8_t) !strcmp(rep.data, "TRUE") ? 1 : 0;}
                 break;
                 case CHAR:
-                    if (rep.suffixed) {(*val).value.chr = (uint8_t) atoi(rep.data);}
-                    else {(*val).value.chr = (uint8_t) rep.data[1];}
+                    if (rep.suffixed) {(*val).chr = (uint8_t) atoi(rep.data);}
+                    else {(*val).chr = (uint8_t) rep.data[1];}
                 break;
-                case INT32: (*val).value.i32 = (int32_t) atoi(rep.data); break;
-                case INT64: (*val).value.i64 = (int64_t) atol(rep.data); break;
+                case INT32: (*val).i32 = (int32_t) atoi(rep.data); break;
+                case INT64: (*val).i64 = (int64_t) atol(rep.data); break;
                 default: exit(1);
             }
         }
         else if (TypeReal(known_type) && TypeReal(type)) {
             switch(type) {
-                case REAL32: (*val).value.r32 = (float) atof(rep.data); break;
-                case REAL64: (*val).value.r64 = (double) atof(rep.data); break;
+                case REAL32: (*val).r32 = (float) atof(rep.data); break;
+                case REAL64: (*val).r64 = (double) atof(rep.data); break;
                 default: exit(1);
             }
         } else {

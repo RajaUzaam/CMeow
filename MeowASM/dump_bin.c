@@ -59,12 +59,12 @@ void writeConsts() {
     for (uint64_t i = 0; i < _co_consts_size; i++) {
         bin_code[curr_const_addr++] = _co_consts[i].type;
         switch (_co_consts[i].type) {
-            case INT32: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.i32, GetBytes(_co_consts[i].type)); break;
-            case INT64: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.i64, GetBytes(_co_consts[i].type)); break;
-            case BOOL: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.bl, GetBytes(_co_consts[i].type)); break;
-            case CHAR: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.chr, GetBytes(_co_consts[i].type)); break;
-            case REAL32: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.r32, GetBytes(_co_consts[i].type)); break;
-            case REAL64: memcpy(&bin_code[curr_const_addr], &_co_consts[i].value.r64, GetBytes(_co_consts[i].type)); break;
+            case INT32: memcpy(&bin_code[curr_const_addr], &_co_consts[i].i32, GetBytes(_co_consts[i].type)); break;
+            case INT64: memcpy(&bin_code[curr_const_addr], &_co_consts[i].i64, GetBytes(_co_consts[i].type)); break;
+            case BOOL: memcpy(&bin_code[curr_const_addr], &_co_consts[i].bl, GetBytes(_co_consts[i].type)); break;
+            case CHAR: memcpy(&bin_code[curr_const_addr], &_co_consts[i].chr, GetBytes(_co_consts[i].type)); break;
+            case REAL32: memcpy(&bin_code[curr_const_addr], &_co_consts[i].r32, GetBytes(_co_consts[i].type)); break;
+            case REAL64: memcpy(&bin_code[curr_const_addr], &_co_consts[i].r64, GetBytes(_co_consts[i].type)); break;
             default: exit(1);
         }
         curr_const_addr += GetBytes(_co_consts[i].type);

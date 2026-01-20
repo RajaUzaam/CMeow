@@ -14,6 +14,9 @@ uint8_t *code = NULL;
 
 uint8_t operand_size = WORD;
 
+OFMode of_mode = OF_ERR;
+bool last_of = false;
+
 void InitializeVM() {
     vm.stack = NULL;
     vm.fp = 0;

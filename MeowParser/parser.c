@@ -57,7 +57,7 @@ static Stmt* alloc_stmt(Stmt e) {
 }
 
 Expr* primary() {
-    if (match((TokenType[]){INTEGER, REAL, STRING, BOOL}, 4)) {
+    if (match((TokenType[]){INTEGER, REAL, STRING, BL}, 4)) {
         return alloc_expr((Expr){.type=LITERAL, .literal=previous().literal});
     }
     if (match((TokenType[]){LEFT_PAREN}, 1)) {
@@ -122,9 +122,9 @@ Expr* expression() {
     return equality();
 }
 
-Expr* declaration() {
+// Expr* declaration() {
 
-}
+// }
 
 Stmt* print_statement() {
     Expr* value = expression();

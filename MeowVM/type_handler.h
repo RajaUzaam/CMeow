@@ -6,6 +6,18 @@
 
 #endif
 
+void to_bl(Value *val);
+void to_i32(Value *val);
+void to_i64(Value *val);
+void to_r32(Value *val);
+void to_r64(Value *val);
+void to_chr(Value *val);
+
+// void cast_type(Value *val, ValueType target);
+// void promote(Value *val, ValueType *target_type);
+
 ValueType resolve_type(Value* lhs, Value* rhs);
-void cast_type(Value *val, ValueType target);
-void promote(Value *val, ValueType *target_type);
+bool add_overflow(Value* lhs, Value* rhs, ValueType type);
+bool sub_overflow(Value* lhs, Value* rhs, ValueType type);
+bool mul_overflow(Value* lhs, Value* rhs, ValueType type);
+bool div_overflow(Value* lhs, Value* rhs, ValueType type);

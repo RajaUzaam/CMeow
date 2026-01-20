@@ -5,6 +5,7 @@
 #include "../header.h"
 #include "../instruction_set.h"
 #include "type_handler.h"
+#include "execute.h"
 
 typedef struct Function {
     uint64_t idx;
@@ -18,7 +19,7 @@ typedef struct Function {
 
 typedef struct Frame {
     Function *func_ptr;
-    int64_t ip;
+    uint64_t ip;
     int64_t ret_addr;
 } Frame;
 
@@ -30,7 +31,7 @@ typedef struct VM {
     Frame *call_stack;
     int64_t fp;
 
-    Function *functions;
+    Function **functions;
     uint64_t func_count;
 } VM;
 
@@ -54,6 +55,17 @@ extern uint64_t co_consts_size;
 
 extern uint8_t operand_size;
 
+typedef enum OFMode {
+    OF_ERR,
+    OF_WRAP,
+    OF_PRMT
+} OFMode;
+
+extern bool debugger;
+extern bool _static;
+extern OFMode of_mode;
+extern bool last_of;
+
 #endif
 
 void ConstructBin();
@@ -75,24 +87,24 @@ Instruction fetch_instruction();
 bool decode_execute(Instruction Instruction);
 
 //Operations
-void perform_operation(Value *total, BinaryOps oper);
+bool adjust_overflow(Value* lhs, Value* rhs, ValueType type, bool (of_func)(Value*, Value*, ValueType));
 
 // Instructions
-bool stop   (uint64_t operand);
-bool push   (uint64_t operand);
-bool out    (uint64_t operand);
-bool store  (uint64_t operand);
-bool load   (uint64_t operand);
-bool add    (uint64_t operand);
-bool sub    (uint64_t operand);
-bool mul    (uint64_t operand);
-bool div_   (uint64_t operand); //div() is a c lib ig
-bool jmp    (uint64_t operand);
-bool call   (uint64_t operand);
-bool ret    (uint64_t operand);
-bool load_a (uint64_t operand);
-bool enter  (uint64_t operand);
-bool load_l (uint64_t operand);
-bool store_l(uint64_t operand);
-bool leave  (uint64_t operand);
-bool e_size (uint64_t operand);
+// bool stop   (uint64_t operand);
+// bool push   (uint64_t operand);
+// bool out    (uint64_t operand);
+// bool store  (uint64_t operand);
+// bool load   (uint64_t operand);
+// bool add    (uint64_t operand);
+// bool sub    (uint64_t operand);
+// bool mul    (uint64_t operand);
+// bool div_   (uint64_t operand); //div() is a c lib ig
+// bool jmp    (uint64_t operand);
+// bool call   (uint64_t operand);
+// bool ret    (uint64_t operand);
+// bool load_a (uint64_t operand);
+// bool enter  (uint64_t operand);
+// bool load_l (uint64_t operand);
+// bool store_l(uint64_t operand);
+// bool leave  (uint64_t operand);
+// bool e_size (uint64_t operand);

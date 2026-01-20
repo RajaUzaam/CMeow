@@ -30,17 +30,17 @@ void construct_const_table(uint64_t addr) {
         memcpy(&new_val, &code[i], GetBytes(co_consts[idx].type));
         switch (co_consts[idx].type) {
             case INT32:
-                memcpy(&co_consts[idx].value.i32, &new_val, GetBytes(co_consts[idx].type)); break;
+                memcpy(&co_consts[idx].i32, &new_val, GetBytes(co_consts[idx].type)); break;
             case INT64:
-                memcpy(&co_consts[idx].value.i64, &new_val, GetBytes(co_consts[idx].type)); break;
+                memcpy(&co_consts[idx].i64, &new_val, GetBytes(co_consts[idx].type)); break;
             case BOOL:
-                memcpy(&co_consts[idx].value.bl, &new_val, GetBytes(co_consts[idx].type)); break;
+                memcpy(&co_consts[idx].bl, &new_val, GetBytes(co_consts[idx].type)); break;
             case CHAR:
-                memcpy(&co_consts[idx].value.chr, &new_val, GetBytes(co_consts[idx].type)); break;
+                memcpy(&co_consts[idx].chr, &new_val, GetBytes(co_consts[idx].type)); break;
             case REAL32:
-                memcpy(&co_consts[idx].value.r32, &new_val, GetBytes(co_consts[idx].type)); break;
+                memcpy(&co_consts[idx].r32, &new_val, GetBytes(co_consts[idx].type)); break;
             case REAL64:
-                memcpy(&co_consts[idx].value.r64, &new_val, GetBytes(co_consts[idx].type)); break;
+                memcpy(&co_consts[idx].r64, &new_val, GetBytes(co_consts[idx].type)); break;
             default:
                 perror("Unknown Const Type!");
                 exit(1);
@@ -58,12 +58,12 @@ void construct_global_table(uint64_t addr) {
     for (uint64_t idx = 0; idx < globals_size; idx++) {
         globals[idx].type = code[i++];
         switch (globals[idx].type) {
-            case INT32: globals[idx].value.i32 = 0; break;
-            case INT64: globals[idx].value.i64 = 0; break;
-            case BOOL: globals[idx].value.bl = 0; break;
-            case CHAR: globals[idx].value.chr = 0; break;
-            case REAL32: globals[idx].value.r32 = 0; break;
-            case REAL64: globals[idx].value.r64 = 0; break;
+            case INT32: globals[idx].i32 = 0; break;
+            case INT64: globals[idx].i64 = 0; break;
+            case BOOL: globals[idx].bl = 0; break;
+            case CHAR: globals[idx].chr = 0; break;
+            case REAL32: globals[idx].r32 = 0; break;
+            case REAL64: globals[idx].r64 = 0; break;
             default:
                 perror("Unknown Global Type!");
                 exit(1);
@@ -73,7 +73,7 @@ void construct_global_table(uint64_t addr) {
 
 // Load function bytecode
 void load_func_bytecode(uint64_t idx, uint64_t addr, uint8_t **bc_code, uint64_t size) {
-    vm.functions[idx].code_size = size;
+    vm.functions[idx]->code_size = size;
     *bc_code = malloc(sizeof(uint8_t) * size);
     memcpy(*bc_code, &code[addr], size);
 }
@@ -99,10 +99,10 @@ void construct_func_table(uint64_t addr, uint64_t func_count) {
                 case INDEX:
                     idx = read_int32(code, ip);
                     read_opcodes++; ip += 4;
-                    vm.functions[j].idx = idx;
+                    vm.functions[j]->idx = idx;
                     if (entry) {
                         vm.call_stack = malloc(sizeof(Frame));
-                        vm.call_stack[0].func_ptr = &vm.functions[func_count-1];
+                        vm.call_stack[0].func_ptr = vm.functions[func_count-1];
                         vm.call_stack[0].ip = 0;
                         vm.call_stack[0].ret_addr = 0;
                     }
@@ -114,25 +114,25 @@ void construct_func_table(uint64_t addr, uint64_t func_count) {
                 case CODE_SIZE:
                     code_size = read_int32(code, ip);
                     ip += 4; read_opcodes++;
-                    load_func_bytecode(idx, offset, &vm.functions[idx].code, code_size);
+                    load_func_bytecode(idx, offset, &vm.functions[idx]->code, code_size);
                     break;
                 case ARGS: {
                     uint64_t arg_num = read_int16(code, ip);
                     ip += sizeof(int16_t); read_opcodes++;
-                    vm.functions[idx].arg_num = arg_num;
-                    vm.functions[idx].args = malloc(sizeof(ValueType) * arg_num);
+                    vm.functions[idx]->arg_num = arg_num;
+                    vm.functions[idx]->args = malloc(sizeof(ValueType) * arg_num);
                     for (uint64_t j = 0; j < arg_num; j++) {
-                        vm.functions[idx].args[j] = code[ip++];
+                        vm.functions[idx]->args[j] = code[ip++];
                     }
                     break;
                 }
                 case LOCALS: {
                     uint64_t local_num = read_int16(code, ip);
                     ip += sizeof(int16_t); read_opcodes++;
-                    vm.functions[idx].local_num = local_num;
-                    vm.functions[idx].locals = malloc(sizeof(ValueType) * local_num);
+                    vm.functions[idx]->local_num = local_num;
+                    vm.functions[idx]->locals = malloc(sizeof(ValueType) * local_num);
                     for (uint64_t j = 0; j < local_num; j++) {
-                        vm.functions[idx].locals[j] = code[ip++];
+                        vm.functions[idx]->locals[j] = code[ip++];
                     }
                     break;
                 }
@@ -151,14 +151,13 @@ void construct_func_table(uint64_t addr, uint64_t func_count) {
 void construct_frame_table(int64_t addr) {
     uint64_t func_count = read_int32(code, addr);
     vm.func_count = func_count;
-    vm.functions = malloc(sizeof(Function) * func_count);
-
+    vm.functions = malloc(sizeof(Function*) * func_count);
     for (uint64_t i = 0; i < func_count; i++) {
-        vm.functions[i].code = NULL;
-        vm.functions[i].args = NULL;
-        vm.functions[i].locals = NULL;
+        vm.functions[i] = malloc(sizeof(Function));
+        vm.functions[i]->code = NULL;
+        vm.functions[i]->args = NULL;
+        vm.functions[i]->locals = NULL;
     }
-
     construct_func_table(addr + 4, func_count);
 }
 

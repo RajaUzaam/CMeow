@@ -42,7 +42,7 @@ typedef struct Value {
     bool constant;
     ValueType type;
     union {
-        uint8_t bl;
+        bool bl;
         uint8_t chr;
 
         int32_t i32;
@@ -54,7 +54,7 @@ typedef struct Value {
         void    *ptr;
 
         Object obj;
-    } value;
+    };
 } Value;
 
 #endif

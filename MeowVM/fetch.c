@@ -2,7 +2,6 @@
 
 Instruction fetch_instruction() {
     Instruction new_instruction;
-
     Frame *frame = &vm.call_stack[vm.fp];
     Function *fn = frame->func_ptr;
 

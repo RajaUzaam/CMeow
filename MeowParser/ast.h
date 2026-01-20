@@ -7,6 +7,7 @@
 #include "error.h"
 
 typedef struct Expr Expr;
+typedef struct Decl Decl;
 typedef struct Stmt Stmt;
 
 typedef enum {
@@ -36,7 +37,7 @@ struct Expr {
     union {
         Binary binary;
         Grouping group;
-        Value literal;
+        Value literal; // TODO: Token literal
         Unary unary;
     };
 };
@@ -52,6 +53,24 @@ struct Stmt {
         Expr* expr;
         Expr* out_stmt;
     };
+};
+
+typedef enum DeclType {
+    DECL_VAR,
+    STMT,
+} DeclType;
+
+typedef struct VarDecl {
+    Token name;
+    Expr* initialize;
+} VarDecl;
+
+struct Decl {
+    DeclType type;
+    union {
+        VarDecl var_decl;
+        Stmt* stmt;
+    }; 
 };
 
 #endif

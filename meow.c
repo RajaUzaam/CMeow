@@ -2,6 +2,7 @@
 #include "instruction_set.h"
 #include "MeowVM/vm.h"
 #include "MeowASM/assembler.h"
+#include "MeowBC/linker.h"
 
 int main(int argc, char* argv[]) {
     
@@ -25,7 +26,12 @@ int main(int argc, char* argv[]) {
             
         } 
         else if (!strcmp(argv[1], "-r")) {
-
+            initialize_linker();
+            add_constant((Value) {.type=INT32, .i32=10});
+            add_constant((Value) {.type=INT32, .i32=10});
+            add_opcode(ADD);
+            add_opcode(OUT);
+            initiate_linking();
         }
         else if (!strcmp(argv[1], "-w")) {
             

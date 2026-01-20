@@ -17,7 +17,7 @@ const char* TokenTypeString[] = {
 
     // Keywords.
     "DECLARE", "THEN", "AND", "CLASS", "ELSE", "FUNCTION", "ENDFUNCTION", "PROCEDURE",
-    "ENDPROCEDURE", "TO", "OF", "NEXT", "UNTIL", "CALL",
+    "ENDPROCEDURE", "TO", "OF", "NEXT", "UNTIL", "TOK_CALL",
     "FOR", "IF", "ENDIF", "OR", "NOT", "SWITCH", "CASE", "OTHERWISE", "REPEAT", "DO",
     "OUTPUT", "INPUT", "RETURN", "SUPER", "THIS", "VAR", "WHILE", "ENDWHILE", 
     "BREAK", "ENDSWITCH", "RETURNS", "NUL"

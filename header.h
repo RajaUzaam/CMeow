@@ -9,5 +9,7 @@
 #include <ctype.h>
 #include <stdint.h>
 #include <float.h>
+#include <limits.h>
+#include <math.h>
 
 #endif

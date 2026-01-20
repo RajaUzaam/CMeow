@@ -1,39 +1,39 @@
 #include "type_handler.h"
 
 // Convert any Value to int64_t (truncates floats)
-int64_t to_int64(const Value *val) {
-    switch(val->type) {
-        case INT32:  return val->value.i32;
-        case INT64:  return val->value.i64;
-        case BOOL:   return val->value.bl ? 1 : 0;
-        case CHAR:   return val->value.chr;
-        case REAL32: return (int64_t) val->value.r32;
-        case REAL64: return (int64_t) val->value.r64;
-        default:     return 0; // PTR or unsupported
-    }
-}
+// int64_t to_int64(const Value *val) {
+//     switch(val->type) {
+//         case INT32:  return val->i32;
+//         case INT64:  return val->i64;
+//         case BOOL:   return val->bl ? 1 : 0;
+//         case CHAR:   return val->chr;
+//         case REAL32: return (int64_t) val->r32;
+//         case REAL64: return (int64_t) val->r64;
+//         default:     return 0; // PTR or unsupported
+//     }
+// }
 
-// Convert any Value to double (for floating-point casts)
-double to_double(const Value *val) {
-    switch(val->type) {
-        case INT32:  return (double) val->value.i32;
-        case INT64:  return (double) val->value.i64;
-        case BOOL:   return (double) val->value.bl ? 1.0 : 0.0;
-        case CHAR:   return (double) val->value.chr;
-        case REAL32: return val->value.r32;
-        case REAL64: return val->value.r64;
-        default:     return 0.0;
-    }
-}
+// // Convert any Value to double (for floating-point casts)
+// double to_double(const Value *val) {
+//     switch(val->type) {
+//         case INT32:  return (double) val->i32;
+//         case INT64:  return (double) val->i64;
+//         case BOOL:   return (double) val->bl ? 1.0 : 0.0;
+//         case CHAR:   return (double) val->chr;
+//         case REAL32: return val->r32;
+//         case REAL64: return val->r64;
+//         default:     return 0.0;
+//     }
+// }
 
 void to_i32(Value *val) {
     switch(val->type) {
         case INT32:  return;
-        case INT64:  val->value.i32 = (int32_t) val->value.i64; break;
-        case BOOL:   val->value.i32 = (int32_t) val->value.bl; break;
-        case CHAR:   val->value.i32 = (int32_t) val->value.chr; break;
-        case REAL32: val->value.i32 = (int32_t) val->value.r32; break;
-        case REAL64: val->value.i32 = (int32_t) val->value.r64; break;
+        case INT64:  val->i32 = (int32_t) val->i64; break;
+        case BOOL:   val->i32 = (int32_t) val->bl; break;
+        case CHAR:   val->i32 = (int32_t) val->chr; break;
+        case REAL32: val->i32 = (int32_t) val->r32; break;
+        case REAL64: val->i32 = (int32_t) val->r64; break;
         default:     return;
     }
     val->type = INT32;
@@ -41,12 +41,12 @@ void to_i32(Value *val) {
 
 void to_i64(Value *val) {
     switch(val->type) {
-        case INT32:  val->value.i64 = (int64_t) val->value.i32; break;
+        case INT32:  val->i64 = (int64_t) val->i32; break;
         case INT64:  return;
-        case BOOL:   val->value.i64 = (int64_t) val->value.bl; break;
-        case CHAR:   val->value.i64 = (int64_t) val->value.chr; break;
-        case REAL32: val->value.i64 = (int64_t) val->value.r32; break;
-        case REAL64: val->value.i64 = (int64_t) val->value.r64; break;
+        case BOOL:   val->i64 = (int64_t) val->bl; break;
+        case CHAR:   val->i64 = (int64_t) val->chr; break;
+        case REAL32: val->i64 = (int64_t) val->r32; break;
+        case REAL64: val->i64 = (int64_t) val->r64; break;
         default:     return;
     }
     val->type = INT64;
@@ -54,12 +54,12 @@ void to_i64(Value *val) {
 
 void to_r32(Value *val) {
     switch(val->type) {
-        case INT32:  val->value.r32 = (float) val->value.i32; break;
-        case INT64:  val->value.r32 = (float) val->value.i64; break;
-        case BOOL:   val->value.r32 = (float) val->value.bl; break;
-        case CHAR:   val->value.r32 = (float) val->value.chr; break;
+        case INT32:  val->r32 = (float) val->i32; break;
+        case INT64:  val->r32 = (float) val->i64; break;
+        case BOOL:   val->r32 = (float) val->bl; break;
+        case CHAR:   val->r32 = (float) val->chr; break;
         case REAL32: return;
-        case REAL64: val->value.r32 = (float) val->value.r64; break;
+        case REAL64: val->r32 = (float) val->r64; break;
         default:     return;
     }
     val->type = REAL32;
@@ -67,11 +67,11 @@ void to_r32(Value *val) {
 
 void to_r64(Value *val) {
     switch(val->type) {
-        case INT32:  val->value.r64 = (double) val->value.i32; break;
-        case INT64:  val->value.r64 = (double) val->value.i64; break;
-        case BOOL:   val->value.r64 = (double) val->value.bl; break;
-        case CHAR:   val->value.r64 = (double) val->value.chr; break;
-        case REAL32: val->value.r64 = (double) val->value.r32; break;
+        case INT32:  val->r64 = (double) val->i32; break;
+        case INT64:  val->r64 = (double) val->i64; break;
+        case BOOL:   val->r64 = (double) val->bl; break;
+        case CHAR:   val->r64 = (double) val->chr; break;
+        case REAL32: val->r64 = (double) val->r32; break;
         case REAL64: return;
         default:     return;
     }
@@ -80,12 +80,12 @@ void to_r64(Value *val) {
 
 void to_chr(Value *val) {
     switch(val->type) {
-        case INT32:  val->value.chr = (char) val->value.i32; break;
-        case INT64:  val->value.chr = (char) val->value.i64; break;
-        case BOOL:   val->value.chr = (char) val->value.bl; break;
+        case INT32:  val->chr = (char) val->i32; break;
+        case INT64:  val->chr = (char) val->i64; break;
+        case BOOL:   val->chr = (char) val->bl; break;
         case CHAR:   return;
-        case REAL32: val->value.chr = (char) val->value.r32; break;
-        case REAL64: val->value.chr = (char) val->value.r64; break;
+        case REAL32: val->chr = (char) val->r32; break;
+        case REAL64: val->chr = (char) val->r64; break;
         default:     return;
     }
     val->type = CHAR;
@@ -93,12 +93,14 @@ void to_chr(Value *val) {
 
 void to_bl(Value *val) {
     switch(val->type) {
-        case INT32:  val->value.bl = (bool) val->value.i32; break;
-        case INT64:  val->value.bl = (bool) val->value.i64; break;
+        case INT32:  val->bl = val->i32 != 0; break;
+        case INT64:  val->bl = val->i64 != 0; break;
         case BOOL:   return;
-        case CHAR:   val->value.bl = (bool) val->value.chr; break;
-        case REAL32: val->value.bl = (bool) val->value.r32; break;
-        case REAL64: val->value.bl = (bool) val->value.r64; break;
+        case CHAR:   val->bl = val->chr != 0; break;
+        case REAL32: val->bl = val->r32 != 0; break;
+        case REAL64: val->bl = val->r64 != 0; break;
+        case NONE:   val->bl = false; break;
+        case OBJ:    val->bl = true; break;
         default:     return;
     }
     val->type = BOOL;
@@ -109,7 +111,7 @@ ValueType resolve_type(Value* lhs, Value* rhs) {
         return rhs->type;
     }
     ValueType final_type = max(rhs->type, lhs->type);
-    Value* diff = final_type == rhs->type ? rhs : lhs;
+    Value* diff = final_type == rhs->type ? lhs : rhs;
     switch(final_type) {
         case INT32: to_i32(diff); break;
         case INT64: to_i64(diff); break;
@@ -122,40 +124,131 @@ ValueType resolve_type(Value* lhs, Value* rhs) {
     return final_type;
 }
 
-// Cast val to target type
-void cast_type(Value *val, ValueType target) {
-    if(val->type == target) return;
+bool add_overflow(Value* lhs, Value* rhs, ValueType type) {
+    switch (type) {
+        case INT32:     return (rhs->i32 >= 0) ? (lhs->i32 > INT32_MAX - rhs->i32) : (lhs->i32 < INT32_MIN - rhs->i32);
+        case INT64:     return (rhs->i64 >= 0) ? (lhs->i64 > INT64_MAX - rhs->i64) : (lhs->i64 < INT64_MIN - rhs->i64);
+        case REAL32:    return (rhs->r32 >= 0) ? (lhs->r32 > FLT_MAX - rhs->r32) : (lhs->r32 < -FLT_MAX - rhs->r32);
+        case REAL64:    return (rhs->r64 >= 0) ? (lhs->r64 > DBL_MAX - rhs->r64) : (lhs->r64 < -DBL_MAX - rhs->r64);
+        case CHAR:      return lhs->chr < rhs->chr;
+        case BOOL:      return false;
+        default:        return false;
+    }
+}
 
-    switch(target) {
+bool sub_overflow(Value* lhs, Value* rhs, ValueType type) {
+    switch (type) {
+        case INT32:     rhs->i32 = -rhs->i32; break;
+        case INT64:     rhs->i64 = -rhs->i64; break;
+        case REAL32:    rhs->r32 = -rhs->r32; break;
+        case REAL64:    rhs->r64 = -rhs->r64; break;
+        case CHAR:      return lhs->chr > UCHAR_MAX - rhs->chr; break;
+        case BOOL:      return false;
+        default:        return false;
+    }
+    return add_overflow(lhs, rhs, type);
+}
+
+//To repetetive, written by chat gpt
+bool mul_overflow(Value* lhs, Value* rhs, ValueType type) {
+    switch(type) {
+        case INT32: {
+            int32_t a = lhs->i32;
+            int32_t b = rhs->i32;
+            if (a == 0 || b == 0) return false;
+            if (a == -1 && b == INT32_MIN) return true;
+            if (b == -1 && a == INT32_MIN) return true;
+            if (a > 0) {
+                return (b > 0) ? (a > INT32_MAX / b)
+                                : (b < INT32_MIN / a);
+            } else { // a < 0
+                return (b > 0) ? (a < INT32_MIN / b)
+                                : (a < INT32_MAX / b);
+            }
+        }
+        case INT64: {
+            int64_t a = lhs->i64;
+            int64_t b = rhs->i64;
+            if (a == 0 || b == 0) return false;
+            if (a == -1 && b == INT64_MIN) return true;
+            if (b == -1 && a == INT64_MIN) return true;
+            if (a > 0) {
+                return (b > 0) ? (a > INT64_MAX / b)
+                                : (b < INT64_MIN / a);
+            } else { // a < 0
+                return (b > 0) ? (a < INT64_MIN / b)
+                                : (a < INT64_MAX / b);
+            }
+        }
+        case REAL32: {
+            float res = lhs->r32 * rhs->r32;
+            return isinf(res);
+        }
+        case REAL64: {
+            double res = lhs->r64 * rhs->r64;
+            return isinf(res);
+        }
+        case CHAR: { // unsigned char
+            unsigned char a = lhs->chr;
+            unsigned char b = rhs->chr;
+            return b != 0 && a > UCHAR_MAX / b;
+        }
         case BOOL:
-            val->value.bl = (uint8_t) to_int64(val); break;
-        case CHAR:
-            val->value.chr = (uint8_t) to_int64(val); break;
-        case INT32:
-            val->value.i32 = (int32_t) to_int64(val); break;
-        case INT64:
-            val->value.i64 = to_int64(val); break;
-        case REAL32:
-            val->value.r32 = (float) to_double(val); break;
-        case REAL64:
-            val->value.r64 = to_double(val); break;
+            return false; // logical OR cannot overflow
         default:
-            printf("what the hell are you feeding me!\n");
-            exit(1);
-    }
-
-    val->type = target;
-}
-
-
-
-void promote(Value *val, ValueType *target_type) {
-    if (TypeInt(*target_type)) {
-        val->value.i64 = to_int64(val);
-        val->type = INT64;
-    }
-    else if (TypeReal(*target_type)) {
-        val->value.r64 = to_double(val);
-        val->type = REAL64;
+            return false;
     }
 }
+
+bool div_overflow(Value* lhs, Value* rhs, ValueType type) {
+    switch(type) {
+        case INT32: return lhs->i32 == INT32_MIN && rhs->i32 == -1;
+        case INT64: return lhs->i64 == INT64_MIN && rhs->i64 == -1;
+        case REAL32: { 
+            float res = lhs->r32 / rhs->r32;
+            return isinf(res); // overflow to infinity
+        }
+        case REAL64: {
+            double res = lhs->r64 / rhs->r64;
+            return isinf(res);
+        }
+        case CHAR: case BOOL: return false; // division cannot overflow
+        default: return false;
+    }
+}
+
+// // Cast val to target type
+// void cast_type(Value *val, ValueType target) {
+//     if(val->type == target) return;
+
+//     switch(target) {
+//         case BOOL:
+//             val->bl = (uint8_t) to_int64(val); break;
+//         case CHAR:
+//             val->chr = (uint8_t) to_int64(val); break;
+//         case INT32:
+//             val->i32 = (int32_t) to_int64(val); break;
+//         case INT64:
+//             val->i64 = to_int64(val); break;
+//         case REAL32:
+//             val->r32 = (float) to_double(val); break;
+//         case REAL64:
+//             val->r64 = to_double(val); break;
+//         default:
+//             printf("what the hell are you feeding me!\n");
+//             exit(1);
+//     }
+
+//     val->type = target;
+// }
+
+// void promote(Value *val, ValueType *target_type) {
+//     if (TypeInt(*target_type)) {
+//         val->i64 = to_int64(val);
+//         val->type = INT64;
+//     }
+//     else if (TypeReal(*target_type)) {
+//         val->r64 = to_double(val);
+//         val->type = REAL64;
+//     }
+// }

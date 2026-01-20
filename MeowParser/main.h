@@ -7,5 +7,7 @@
 #include "token.h"
 #include "parser.h"
 #include "tree_walker.h"
+#include "bc_emitter.h"
+#include "../MeowBC/linker.h"
 
 #endif

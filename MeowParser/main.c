@@ -17,6 +17,7 @@ int main(int argc, char* argv[]) {
     Stmt** tree = NULL;
     Parser(&tokens, &tree, &stmts_num);
     
+    initialize_linker();
     Walker(&tree, stmts_num);
 
     if (err_status) {

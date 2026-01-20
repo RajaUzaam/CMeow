@@ -1,0 +1,27 @@
+#ifndef RT_ERR
+#define RT_ERR
+
+#include "../header.h"
+
+typedef enum ERR_CODE {
+    STACK_OVERFLOW,
+    STACK_UNDERFLOW,
+    ZERO_DIVISION,
+    UNKNOWN_INSTRUCTION,
+    OUT_OF_BOUNDS,
+    UNDEFINED_GLOBAL,
+    UNDEFINED_LOCAL,
+    UNDEFINED_FUNCTION,
+    OPER_OVERFLOW,
+    NONE_OPERATION,
+    INVALID_MEM,
+    HEAP_FAIL,
+    INVALID_TYPE,
+    IO_ERR,
+    INVALID_IN,
+    INVALID_CAST,
+    TYPE_MISMATCH,
+    CUSTOM,
+} ERR_CODE;
+
+#endif
