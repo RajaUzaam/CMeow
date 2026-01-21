@@ -4,18 +4,18 @@
 
 VM vm;
 
-Value *globals = NULL;
-uint64_t globals_size = 0;
+// Value *globals = NULL;
+// uint64_t globals_size = 0;
 
-Value *co_consts = NULL;
-uint64_t co_consts_size = 0;
+// Value *co_consts = NULL;
+// uint64_t co_consts_size = 0;
 
 uint8_t *code = NULL;
 
-uint8_t operand_size = WORD;
+// uint8_t operand_size = WORD;
 
-OFMode of_mode = OF_ERR;
-bool last_of = false;
+// OFMode of_mode = OF_ERR;
+// bool last_of = false;
 
 void InitializeVM() {
     vm.stack = NULL;

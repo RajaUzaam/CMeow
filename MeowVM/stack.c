@@ -1,4 +1,4 @@
-#include "vm.h"
+#include "stack.h"
 
 void push_val(Value val) {
     vm.stack = realloc(vm.stack, (++vm.sp + 1) * sizeof(Value));

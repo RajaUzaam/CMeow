@@ -1,9 +1,10 @@
-#include "vm.h"
+//#include "vm.h"
+#include "execute.h"
 
 bool stop(uint64_t operand) {return true;}
 
 bool push(uint64_t operand) {
-    push_val(co_consts[operand]);
+    push_val(vm.constants[operand]);
     return false;
 }
 
@@ -159,7 +160,7 @@ bool leave(uint64_t operand) {
 }
 
 bool enter(uint64_t operand) {
-    uint32_t val = co_consts[operand].i32;
+    uint32_t val = vm.constants[operand].i32;
     for (uint64_t i = 0; i < val; i++) {
         push_val((Value) {.type=INT32, .i32=-1});
     }
@@ -172,7 +173,11 @@ bool call(uint64_t operand) {
     vm.bp = vm.sp;
     vm.fp++;
     vm.call_stack = realloc(vm.call_stack, sizeof(Frame)*(vm.fp+1));
-    vm.call_stack[vm.fp].func_ptr = vm.functions[operand];
+    Value func = get_globals(operand);
+    if (func.type != OBJ && func.obj.type != OBJ_FUNC) {
+        printf("NaF\n"); exit(1);
+    }
+    vm.call_stack[vm.fp].func_ptr = &func.obj.func_obj;//vm.functions[operand];
     vm.call_stack[vm.fp].ip = 0;
     vm.call_stack[vm.fp].ret_addr = vm.fp-1;
     return enter(vm.call_stack[vm.fp].func_ptr->local_num);
@@ -206,13 +211,13 @@ bool store_l(uint64_t operand) {
 
 bool jmp(uint64_t operand) {
     int64_t jmp_addr = (int16_t)operand;
-    jmp_addr = vm.call_stack[vm.fp].ip + (jmp_addr - operand_size - WORD);
+    jmp_addr = vm.call_stack[vm.fp].ip + (jmp_addr - vm.operand_size - WORD);
     vm.call_stack[vm.fp].ip = jmp_addr;
     return false;
 }
 
 bool e_size(uint64_t operand) {
-    operand_size = operand;
+    vm.operand_size = operand;
     return false;
 }
 

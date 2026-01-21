@@ -1,31 +1,5 @@
 #include "type_handler.h"
 
-// Convert any Value to int64_t (truncates floats)
-// int64_t to_int64(const Value *val) {
-//     switch(val->type) {
-//         case INT32:  return val->i32;
-//         case INT64:  return val->i64;
-//         case BOOL:   return val->bl ? 1 : 0;
-//         case CHAR:   return val->chr;
-//         case REAL32: return (int64_t) val->r32;
-//         case REAL64: return (int64_t) val->r64;
-//         default:     return 0; // PTR or unsupported
-//     }
-// }
-
-// // Convert any Value to double (for floating-point casts)
-// double to_double(const Value *val) {
-//     switch(val->type) {
-//         case INT32:  return (double) val->i32;
-//         case INT64:  return (double) val->i64;
-//         case BOOL:   return (double) val->bl ? 1.0 : 0.0;
-//         case CHAR:   return (double) val->chr;
-//         case REAL32: return val->r32;
-//         case REAL64: return val->r64;
-//         default:     return 0.0;
-//     }
-// }
-
 void to_i32(Value *val) {
     switch(val->type) {
         case INT32:  return;
@@ -216,39 +190,3 @@ bool div_overflow(Value* lhs, Value* rhs, ValueType type) {
         default: return false;
     }
 }
-
-// // Cast val to target type
-// void cast_type(Value *val, ValueType target) {
-//     if(val->type == target) return;
-
-//     switch(target) {
-//         case BOOL:
-//             val->bl = (uint8_t) to_int64(val); break;
-//         case CHAR:
-//             val->chr = (uint8_t) to_int64(val); break;
-//         case INT32:
-//             val->i32 = (int32_t) to_int64(val); break;
-//         case INT64:
-//             val->i64 = to_int64(val); break;
-//         case REAL32:
-//             val->r32 = (float) to_double(val); break;
-//         case REAL64:
-//             val->r64 = to_double(val); break;
-//         default:
-//             printf("what the hell are you feeding me!\n");
-//             exit(1);
-//     }
-
-//     val->type = target;
-// }
-
-// void promote(Value *val, ValueType *target_type) {
-//     if (TypeInt(*target_type)) {
-//         val->i64 = to_int64(val);
-//         val->type = INT64;
-//     }
-//     else if (TypeReal(*target_type)) {
-//         val->r64 = to_double(val);
-//         val->type = REAL64;
-//     }
-// }

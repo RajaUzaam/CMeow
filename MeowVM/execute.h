@@ -2,6 +2,13 @@
 #define EXE
 
 #include "../header.h"
+#include "type_handler.h"
+#include "vm_instance.h"
+#include "operations.h"
+#include "globals.h"
+#include "stack.h"
+
+extern struct VM vm;
 
 bool stop   (uint64_t operand);
 bool push   (uint64_t operand);
@@ -40,6 +47,5 @@ bool fb_and (uint64_t operand);
 bool fb_or  (uint64_t operand);
 bool fb_xor (uint64_t operand);
 bool fb_not (uint64_t operand);
-
 
 #endif
